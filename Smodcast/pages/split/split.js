@@ -22,53 +22,17 @@
 
             // Podcast (group) for Page
             this._group = (options && options.groupKey) ? Data.resolveGroupReference(options.groupKey) : Data.groups.getAt(0);
-            
-            /// RSS Syndication Code
-            var client = new Windows.Web.Syndication.SyndicationClient();
-                client.setRequestHeader("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
-            
-            var listData = new Array();
-            
-            // Async RSS Retrieval
-            WinJS.xhr({
-                url: "http://smodcast.com/channels" + this._group.endpoint,
-                responseType: "document"
-            }).done(
-                function completed(result) {
-                    var articleSyndication = result.response;
-
-                    if (articleSyndication) {
-                        var episodes = articleSyndication.querySelectorAll("item");
-                        for (var episodeIndex = 0; episodeIndex < episodes.length; episodeIndex++) {
-                            var newEpisode = {};
-
-                            var episode = episodes[episodeIndex];
-                            
-                            newEpisode.title = episode.querySelector("title").textContent;
-                            newEpisode.subtitle = episode.querySelector("pubDate").textContent;
-                            newEpisode.description = episode.querySelector("description").textContent;
-                            newEpisode.backgroundImage = "http://smodcast.com/wp-content/blogs.dir/1/files_mf/smodcast1400.jpg";
-                            newEpisode.content = episode.querySelector("description").textContent;
-                            
-                            listData.push(newEpisode);
-                        }
-                    }
-                },
-                function error(result) {
-
-                },
-                function progress(result) {
-
-                }
-            );
-            
             this._items = Data.getItemsFromGroup(this._group);
             this._itemSelectionIndex = (options && "selectedIndex" in options) ? options.selectedIndex : -1;
-
             element.querySelector("header[role=banner] .pagetitle").textContent = this._group.title;
+            
+            var list2 = null;
+            var feed = Data.getFeed(this._group.endpoint, function(data) {
+                list2 = Data.generateList(data);
+            });
 
             // Prepare ListView
-            listView.itemDataSource = this._items.dataSource;
+            listView.itemDataSource = list2;
             listView.itemTemplate = element.querySelector(".itemtemplate");
             listView.onselectionchanged = this._selectionChanged.bind(this);
             listView.layout = new ui.ListLayout();

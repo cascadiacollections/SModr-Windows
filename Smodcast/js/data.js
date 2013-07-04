@@ -13,14 +13,12 @@
         list.push(item);
     });
     
-    // Get RSS feed
-    function acquireSyndication(url) {
-
-    }
-    
-    // Return Episode from Result XML
-    function getEpisodesFromXml() {
-        
+    function generateList(data) {
+        var newList = new WinJS.Binding.List();
+        for (var i = 0; i < data.length; i++) {
+            newList.push(data[i]);
+        }
+        return newList;
     }
     
     // Create grouped listview items
@@ -33,11 +31,56 @@
     WinJS.Namespace.define("Data", {
         items: groupedItems,
         groups: groupedItems.groups,
+        getFeed: getFeed,
+        generateList: generateList,
         getItemReference: getItemReference,
         getItemsFromGroup: getItemsFromGroup,
         resolveGroupReference: resolveGroupReference,
         resolveItemReference: resolveItemReference
     });
+
+    /**
+     * Retrieves Podcast RSS feed
+     */
+    function getFeed(endpoint, callback) {
+        
+        var listData = new Array();
+
+        // Async RSS Retrieval
+        WinJS.xhr({
+            url: "http://smodcast.com/channels" + endpoint,
+            responseType: "document"
+        }).done(
+            function completed(result) {
+                var articleSyndication = result.response;
+
+                if (articleSyndication) {
+                    var episodes = articleSyndication.querySelectorAll("item");
+                    for (var episodeIndex = 0; episodeIndex < episodes.length; episodeIndex++) {
+                        var newEpisode = {};
+
+                        var episode = episodes[episodeIndex];
+
+                        newEpisode.title = episode.querySelector("title").textContent;
+                        newEpisode.subtitle = episode.querySelector("pubDate").textContent;
+                        newEpisode.description = episode.querySelector("description").textContent;
+                        newEpisode.backgroundImage = "http://smodcast.com/wp-content/blogs.dir/1/files_mf/smodcast1400.jpg";
+                        newEpisode.content = episode.querySelector("description").textContent;
+
+                        list.push(newEpisode);
+                    }
+                }
+                // Return results to callback function
+                return callback(listData);
+            },
+            function error(result) {
+                throw new Error('ERROR: Problem fetching feed.');
+            },
+            function progress(result) {
+
+            }
+        );
+    };
 
     // Get a reference for an item, using the group key and item title as a
     // unique reference to the item that can be easily serialized.
