@@ -25,18 +25,16 @@
             this._items = Data.getItemsFromGroup(this._group);
             this._itemSelectionIndex = (options && "selectedIndex" in options) ? options.selectedIndex : -1;
             element.querySelector("header[role=banner] .pagetitle").textContent = this._group.title;
-            
-            var list2 = null;
-            var feed = Data.getFeed(this._group.endpoint, function(data) {
-                list2 = Data.generateList(data);
-            });
+
+            // Create the bing itemDataSource
+            var myDataSrc = new smodcoDataSource.datasource(this._group.endpoint);
 
             // Prepare ListView
-            listView.itemDataSource = list2;
+            listView.itemDataSource = myDataSrc;
             listView.itemTemplate = element.querySelector(".itemtemplate");
             listView.onselectionchanged = this._selectionChanged.bind(this);
             listView.layout = new ui.ListLayout();
-
+            console.log("ListView Count: "+listView.itemDataSource.getCount());
             this._updateVisibility();
             
             if (this._isSingleColumn()) {
@@ -72,8 +70,8 @@
             var handler = function (e) {
                 listView.removeEventListener("contentanimating", handler, false);
                 e.preventDefault();
-            }
-
+            };
+            
             if (this._isSingleColumn()) {
                 listView.selection.clear();
                 if (this._itemSelectionIndex >= 0) {
