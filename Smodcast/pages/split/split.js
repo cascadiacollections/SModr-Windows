@@ -14,29 +14,26 @@
         _group: null,
         _itemSelectionIndex: -1,
 
-        // User Navigated to Page
+        // This function is called whenever a user navigates to this page. It
+        // populates the page elements with the app's data.
         ready: function (element, options) {
-            WinJS.Utilities.startLog({ type: "info", tags: "XHR" });
-            
             var listView = element.querySelector(".itemlist").winControl;
 
-            // Podcast (group) for Page
+            // Store information about the group and selection that this page will
+            // display.
             this._group = (options && options.groupKey) ? Data.resolveGroupReference(options.groupKey) : Data.groups.getAt(0);
             this._items = Data.getItemsFromGroup(this._group);
             this._itemSelectionIndex = (options && "selectedIndex" in options) ? options.selectedIndex : -1;
+
             element.querySelector("header[role=banner] .pagetitle").textContent = this._group.title;
 
-            // Create the bing itemDataSource
-            var myDataSrc = new smodcoDataSource.datasource(this._group.endpoint);
-
-            // Prepare ListView
-            listView.itemDataSource = myDataSrc;
+            // Set up the ListView.
+            listView.itemDataSource = this._items.dataSource;
             listView.itemTemplate = element.querySelector(".itemtemplate");
             listView.onselectionchanged = this._selectionChanged.bind(this);
             listView.layout = new ui.ListLayout();
-            console.log("ListView Count: "+listView.itemDataSource.getCount());
+
             this._updateVisibility();
-            
             if (this._isSingleColumn()) {
                 if (this._itemSelectionIndex >= 0) {
                     // For single-column detail view, load the article.
@@ -53,8 +50,7 @@
                 listView.selection.set(Math.max(this._itemSelectionIndex, 0));
             }
         },
-        
-        // Unload Page
+
         unload: function () {
             this._items.dispose();
         },
@@ -70,8 +66,8 @@
             var handler = function (e) {
                 listView.removeEventListener("contentanimating", handler, false);
                 e.preventDefault();
-            };
-            
+            }
+
             if (this._isSingleColumn()) {
                 listView.selection.clear();
                 if (this._itemSelectionIndex >= 0) {

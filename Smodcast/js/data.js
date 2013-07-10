@@ -1,37 +1,162 @@
-﻿(function () {
+﻿/**
+ * Smodcast-Win8 - Data Sources and Service
+ * 
+ */
+(function () {
     "use strict";
 
-    var dataPromises = [];
-    var podcasts;
+    var dataPromises = []
+      , channels = [
+        {
+            key: "blog1",
+            url: 'http://smodcast.com/channels/smodcast/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog2",
+            url: 'http://smodcast.com/channels/tell-em-steve-dave/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog3",
+            url: 'http://smodcast.com/channels/hollywood-babble-on/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+
+        },
+        {
+            key: "blog4",
+            url: 'http://smodcast.com/channels/plus-one/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog5",
+            url: 'http://smodcast.com/channels/i-sell-comics/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        }];
     
-    // ListView WinJS Control
-    var list = new WinJS.Binding.List();
-    
-    // TODO: Replace the data with your real data.
-    // You can add data from asynchronous sources whenever it becomes available.
-    generateSampleData().forEach(function (item) {
-        list.push(item);
-    });
-    
-    function generateList(data) {
-        var newList = new WinJS.Binding.List();
-        for (var i = 0; i < data.length; i++) {
-            newList.push(data[i]);
+    // ListView data binding
+    var blogPosts = new WinJS.Binding.List();
+
+    /** Process Podcast Channel Feeds */
+    function getFeeds() {
+        // Get the content for each feed in the channels array
+        channels.forEach(function (feed) {
+            feed.dataPromise = feed.acquireSyndication(feed.url);
+            dataPromises.push(feed.dataPromise);
+        });
+
+        // Return when all asynchronous operations are complete
+        return WinJS.Promise.join(dataPromises).then(function () {
+            return channels;
+        });
+    }
+
+    /** Get XML for Channel */
+    function acquireSyndication(url) {
+        // Call xhr for the URL to get results asynchronously
+        return WinJS.xhr({
+                url: url,
+                responseType: "document"
+                //headers: { "If-Modified-Since": "Mon, 27 Mar 1972 00:00:00 GMT" }
+            });
+    }
+
+    /** Get Channel's Episodes */
+    function getBlogPosts() {
+        // Walk the results to retrieve the podcast episodes
+        getFeeds().then(function () {
+            // Process each Channel
+            channels.forEach(function (feed) {
+                feed.dataPromise.then(function (response) {
+                    var document = response.responseXML;
+                    
+                    if (document) {
+                        // Get Channel Attributes
+                        feed.title = document.querySelector("channel > title").textContent;
+                        feed.subtitle = document.querySelector("channel > description").textContent;
+                        feed.backgroundImage = document.querySelector("channel > image > url").textContent;
+                        
+                        // Get Channel's episodes
+                        getItemsFromXml(document, blogPosts, feed);
+                    }
+                    else {
+                        console.log("Error loading Podcast Channel.");
+                        /**
+                        // There was an error loading the blog. 
+                        feed.title = "Error loading blog";
+                        feed.updated = "Error";
+                        blogPosts.push({
+                            group: feed,
+                            key: "Error loading blog",
+                            title: feed.url,
+                            author: "Unknown",
+                            month: "?",
+                            day: "?",
+                            year: "?",
+                            content: "Unable to load the blog at " + feed.url
+                        });
+                        */
+                    }
+                });
+            });
+        });
+
+        return blogPosts;
+    }
+
+    /** Get episode items from XML */
+    function getItemsFromXml(document, bPosts, feed) {
+        var episodes = document.querySelectorAll("item");
+
+        // Process each episode item
+        for (var i = 0; i < episodes.length; i++) {
+            var episode = episodes[i];
+
+            var episodeTitle = episode.querySelector("title").textContent;
+            var episodePubDate = episode.querySelector("pubDate").textContent;
+            var episodeDescription = episode.querySelector("description").textContent;
+            // var staticContent = toStaticHTML(post.querySelector("content").textContent);
+
+            // Push episode info to array
+            bPosts.push({
+                group: feed,
+                key: feed.title,
+                title: episodeTitle,
+                pubDate: episodePubDate,
+                description: episodeDescription
+            });
         }
-        return newList;
     }
     
+    // ListView WinJS Control
+    var list = getBlogPosts();
+    
     // Create grouped listview items
+    // ReSharper disable UnusedLocals
     var groupedItems = list.createGrouped(
         function groupKeySelector(item) { return item.group.key; },
         function groupDataSelector(item) { return item.group; }
     );
-
+    // ReSharper restore UnusedLocals
 
     WinJS.Namespace.define("Data", {
         items: groupedItems,
         groups: groupedItems.groups,
-        generateList: generateList,
         getItemReference: getItemReference,
         getItemsFromGroup: getItemsFromGroup,
         resolveGroupReference: resolveGroupReference,
@@ -57,6 +182,7 @@
                 return groupedItems.groups.getAt(i);
             }
         }
+        return null;
     }
 
     // Get a unique item from the provided string array, which should contain a
@@ -68,75 +194,6 @@
                 return item;
             }
         }
-    }
-
-    // Returns an array of sample data that can be added to the application's
-    // data list. 
-    function generateSampleData() {
-        var itemContent = "<p>Curabitur class aliquam vestibulum nam curae maecenas sed integer cras phasellus suspendisse quisque donec dis praesent accumsan bibendum pellentesque condimentum adipiscing etiam consequat vivamus dictumst aliquam duis convallis scelerisque est parturient ullamcorper aliquet fusce suspendisse nunc hac eleifend amet blandit facilisi condimentum commodo scelerisque faucibus aenean ullamcorper ante mauris dignissim consectetuer nullam lorem vestibulum habitant conubia elementum pellentesque morbi facilisis arcu sollicitudin diam cubilia aptent vestibulum auctor eget dapibus pellentesque inceptos leo egestas interdum nulla consectetuer suspendisse adipiscing pellentesque proin lobortis sollicitudin augue elit mus congue fermentum parturient fringilla euismod feugiat</p><p>Curabitur class aliquam vestibulum nam curae maecenas sed integer cras phasellus suspendisse quisque donec dis praesent accumsan bibendum pellentesque condimentum adipiscing etiam consequat vivamus dictumst aliquam duis convallis scelerisque est parturient ullamcorper aliquet fusce suspendisse nunc hac eleifend amet blandit facilisi condimentum commodo scelerisque faucibus aenean ullamcorper ante mauris dignissim consectetuer nullam lorem vestibulum habitant conubia elementum pellentesque morbi facilisis arcu sollicitudin diam cubilia aptent vestibulum auctor eget dapibus pellentesque inceptos leo egestas interdum nulla consectetuer suspendisse adipiscing pellentesque proin lobortis sollicitudin augue elit mus congue fermentum parturient fringilla euismod feugiat</p><p>Curabitur class aliquam vestibulum nam curae maecenas sed integer cras phasellus suspendisse quisque donec dis praesent accumsan bibendum pellentesque condimentum adipiscing etiam consequat vivamus dictumst aliquam duis convallis scelerisque est parturient ullamcorper aliquet fusce suspendisse nunc hac eleifend amet blandit facilisi condimentum commodo scelerisque faucibus aenean ullamcorper ante mauris dignissim consectetuer nullam lorem vestibulum habitant conubia elementum pellentesque morbi facilisis arcu sollicitudin diam cubilia aptent vestibulum auctor eget dapibus pellentesque inceptos leo egestas interdum nulla consectetuer suspendisse adipiscing pellentesque proin lobortis sollicitudin augue elit mus congue fermentum parturient fringilla euismod feugiat</p><p>Curabitur class aliquam vestibulum nam curae maecenas sed integer cras phasellus suspendisse quisque donec dis praesent accumsan bibendum pellentesque condimentum adipiscing etiam consequat vivamus dictumst aliquam duis convallis scelerisque est parturient ullamcorper aliquet fusce suspendisse nunc hac eleifend amet blandit facilisi condimentum commodo scelerisque faucibus aenean ullamcorper ante mauris dignissim consectetuer nullam lorem vestibulum habitant conubia elementum pellentesque morbi facilisis arcu sollicitudin diam cubilia aptent vestibulum auctor eget dapibus pellentesque inceptos leo egestas interdum nulla consectetuer suspendisse adipiscing pellentesque proin lobortis sollicitudin augue elit mus congue fermentum parturient fringilla euismod feugiat</p><p>Curabitur class aliquam vestibulum nam curae maecenas sed integer cras phasellus suspendisse quisque donec dis praesent accumsan bibendum pellentesque condimentum adipiscing etiam consequat vivamus dictumst aliquam duis convallis scelerisque est parturient ullamcorper aliquet fusce suspendisse nunc hac eleifend amet blandit facilisi condimentum commodo scelerisque faucibus aenean ullamcorper ante mauris dignissim consectetuer nullam lorem vestibulum habitant conubia elementum pellentesque morbi facilisis arcu sollicitudin diam cubilia aptent vestibulum auctor eget dapibus pellentesque inceptos leo egestas interdum nulla consectetuer suspendisse adipiscing pellentesque proin lobortis sollicitudin augue elit mus congue fermentum parturient fringilla euismod feugiat</p><p>Curabitur class aliquam vestibulum nam curae maecenas sed integer cras phasellus suspendisse quisque donec dis praesent accumsan bibendum pellentesque condimentum adipiscing etiam consequat vivamus dictumst aliquam duis convallis scelerisque est parturient ullamcorper aliquet fusce suspendisse nunc hac eleifend amet blandit facilisi condimentum commodo scelerisque faucibus aenean ullamcorper ante mauris dignissim consectetuer nullam lorem vestibulum habitant conubia elementum pellentesque morbi facilisis arcu sollicitudin diam cubilia aptent vestibulum auctor eget dapibus pellentesque inceptos leo egestas interdum nulla consectetuer suspendisse adipiscing pellentesque proin lobortis sollicitudin augue elit mus congue fermentum parturient fringilla euismod feugiat</p><p>Curabitur class aliquam vestibulum nam curae maecenas sed integer cras phasellus suspendisse quisque donec dis praesent accumsan bibendum pellentesque condimentum adipiscing etiam consequat vivamus dictumst aliquam duis convallis scelerisque est parturient ullamcorper aliquet fusce suspendisse nunc hac eleifend amet blandit facilisi condimentum commodo scelerisque faucibus aenean ullamcorper ante mauris dignissim consectetuer nullam lorem vestibulum habitant conubia elementum pellentesque morbi facilisis arcu sollicitudin diam cubilia aptent vestibulum auctor eget dapibus pellentesque inceptos leo egestas interdum nulla consectetuer suspendisse adipiscing pellentesque proin lobortis sollicitudin augue elit mus congue fermentum parturient fringilla euismod feugiat";
-        var itemDescription = "Item Description: Pellentesque porta mauris quis interdum vehicula urna sapien ultrices velit nec venenatis dui odio in augue cras posuere enim a cursus convallis neque turpis malesuada erat ut adipiscing neque tortor ac erat";
-        var groupDescription = "Group Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tempor scelerisque lorem in vehicula. Aliquam tincidunt, lacus ut sagittis tristique, turpis massa volutpat augue, eu rutrum ligula ante a ante";
-
-        // These three strings encode placeholder images. You will want to set the
-        // backgroundImage property in your real data to be URLs to images.
-        var darkGray = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXY3B0cPoPAANMAcOba1BlAAAAAElFTkSuQmCC";
-        var lightGray = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXY7h4+cp/AAhpA3h+ANDKAAAAAElFTkSuQmCC";
-        var mediumGray = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXY5g8dcZ/AAY/AsAlWFQ+AAAAAElFTkSuQmCC";
-
-        // Each of these sample groups must have a unique key to be displayed
-        // separately.
-        var sampleGroups = [
-            { key: "group1", title: "Smodcast", subtitle: "You want a podcast?", endpoint: "/smodcast/feed/", backgroundImage: "http://smodcast.com/wp-content/blogs.dir/1/files_mf/smodcast1400.jpg", description: groupDescription },
-            { key: "group2", title: "Hollywood Babble-On", subtitle: "Bigger than Liam Neeson's cock.", endpoint: "/hollywood-babble-on/feed/", backgroundImage: "http://smodcast.com/wp-content/blogs.dir/1/files_mf/babbleon140063.jpg", description: groupDescription },
-            { key: "group3", title: "Tell 'Em Steve-Dave", subtitle: "Two Comic Book Men and an Impractical Joker. Uncensored.", endpoint: "/tell-em-steve-dave/feed/", backgroundImage: "http://smodcast.com/wp-content/blogs.dir/1/files_mf/tesditunes.jpg", description: groupDescription },
-            { key: "group4", title: "Fatman on Batman", subtitle: "The Podcast the Dark Knight deserves... and the one Gotham needs right now.", endpoint: "/fatman-on-batman/feed/", backgroundImage: "http://smodcast.com/wp-content/blogs.dir/1/files_mf/fatmanbatman1400.jpg", description: groupDescription },
-            { key: "group5", title: "Plus One", subtitle: "Pre-nups are for pussies.", endpoint: "/plus-one/feed/", backgroundImage: "http://smodcast.com/wp-content/blogs.dir/1/files_mf/plusone1400.jpg", description: groupDescription },
-            { key: "group6", title: "I Sell Comics", subtitle: "The Weekly Comics Report with Mike & Ming", endpoint: "/i-sell-comics/feed/", backgroundImage: "http://smodcast.com/wp-content/blogs.dir/1/files_mf/iscitunes.jpg", description: groupDescription }
-        ];
-
-        // Each of these sample items should have a reference to a particular
-        // group.
-        var sampleItems = [
-            { group: sampleGroups[0], title: "Item Title: 1", subtitle: "Item Subtitle: 1", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-            { group: sampleGroups[0], title: "Item Title: 2", subtitle: "Item Subtitle: 2", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[0], title: "Item Title: 3", subtitle: "Item Subtitle: 3", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-            { group: sampleGroups[0], title: "Item Title: 4", subtitle: "Item Subtitle: 4", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[0], title: "Item Title: 5", subtitle: "Item Subtitle: 5", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-
-            { group: sampleGroups[1], title: "Item Title: 1", subtitle: "Item Subtitle: 1", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[1], title: "Item Title: 2", subtitle: "Item Subtitle: 2", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-            { group: sampleGroups[1], title: "Item Title: 3", subtitle: "Item Subtitle: 3", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-
-            { group: sampleGroups[2], title: "Item Title: 1", subtitle: "Item Subtitle: 1", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-            { group: sampleGroups[2], title: "Item Title: 2", subtitle: "Item Subtitle: 2", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-            { group: sampleGroups[2], title: "Item Title: 3", subtitle: "Item Subtitle: 3", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[2], title: "Item Title: 4", subtitle: "Item Subtitle: 4", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-            { group: sampleGroups[2], title: "Item Title: 5", subtitle: "Item Subtitle: 5", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-            { group: sampleGroups[2], title: "Item Title: 6", subtitle: "Item Subtitle: 6", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[2], title: "Item Title: 7", subtitle: "Item Subtitle: 7", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-
-            { group: sampleGroups[3], title: "Item Title: 1", subtitle: "Item Subtitle: 1", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[3], title: "Item Title: 2", subtitle: "Item Subtitle: 2", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-            { group: sampleGroups[3], title: "Item Title: 3", subtitle: "Item Subtitle: 3", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[3], title: "Item Title: 4", subtitle: "Item Subtitle: 4", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-            { group: sampleGroups[3], title: "Item Title: 5", subtitle: "Item Subtitle: 5", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-            { group: sampleGroups[3], title: "Item Title: 6", subtitle: "Item Subtitle: 6", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-
-            { group: sampleGroups[4], title: "Item Title: 1", subtitle: "Item Subtitle: 1", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-            { group: sampleGroups[4], title: "Item Title: 2", subtitle: "Item Subtitle: 2", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[4], title: "Item Title: 3", subtitle: "Item Subtitle: 3", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-            { group: sampleGroups[4], title: "Item Title: 4", subtitle: "Item Subtitle: 4", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-
-            { group: sampleGroups[5], title: "Item Title: 1", subtitle: "Item Subtitle: 1", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-            { group: sampleGroups[5], title: "Item Title: 2", subtitle: "Item Subtitle: 2", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[5], title: "Item Title: 3", subtitle: "Item Subtitle: 3", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-            { group: sampleGroups[5], title: "Item Title: 4", subtitle: "Item Subtitle: 4", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[5], title: "Item Title: 5", subtitle: "Item Subtitle: 5", description: itemDescription, content: itemContent, backgroundImage: lightGray },
-            { group: sampleGroups[5], title: "Item Title: 6", subtitle: "Item Subtitle: 6", description: itemDescription, content: itemContent, backgroundImage: mediumGray },
-            { group: sampleGroups[5], title: "Item Title: 7", subtitle: "Item Subtitle: 7", description: itemDescription, content: itemContent, backgroundImage: darkGray },
-            { group: sampleGroups[5], title: "Item Title: 8", subtitle: "Item Subtitle: 8", description: itemDescription, content: itemContent, backgroundImage: lightGray }
-        ];
-
-        return sampleItems;
+        return null;
     }
 })();
