@@ -74,7 +74,7 @@
         },
         {
             key: "blog9",
-            url: 'http://smodcast.com/channels/the-secret-stash/feed/',
+            url: 'http://smodcast.com/channels/last-week-on-earth-with-ben-gleib/feed/',
             title: 'tbd',
             updated: 'tbd',
             acquireSyndication: acquireSyndication,
@@ -82,22 +82,6 @@
         },
         {
             key: "blog10",
-            url: 'http://smodcast.com/channels/last-week-on-earth-with-ben-gleib/feed/',
-            title: 'tbd',
-            updated: 'tbd',
-            acquireSyndication: acquireSyndication,
-            dataPromise: null
-        },
-        {
-            key: "blog11",
-            url: 'http://smodcast.com/channels/last-week-on-earth-with-ben-gleib/feed/',
-            title: 'tbd',
-            updated: 'tbd',
-            acquireSyndication: acquireSyndication,
-            dataPromise: null
-        },
-        {
-            key: "blog12",
             url: 'http://smodcast.com/channels/netheads/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -105,7 +89,7 @@
             dataPromise: null
         },
         {
-            key: "blog13",
+            key: "blog11",
             url: 'http://smodcast.com/channels/get-up-on-this/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -113,7 +97,7 @@
             dataPromise: null
         },
         {
-            key: "blog14",
+            key: "blog12",
             url: 'http://smodcast.com/channels/team-jack/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -121,7 +105,7 @@
             dataPromise: null
         },
         {
-            key: "blog15",
+            key: "blog13",
             url: 'http://smodcast.com/channels/having-sex/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -129,7 +113,7 @@
             dataPromise: null
         },
         {
-            key: "blog16",
+            key: "blog14",
             url: 'http://smodcast.com/channels/tha-breaks/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -137,7 +121,7 @@
             dataPromise: null
         },
         {
-            key: "blog17",
+            key: "blog15",
             url: 'http://smodcast.com/channels/sound-bite-nation/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -145,7 +129,7 @@
             dataPromise: null
         },
         {
-            key: "blog18",
+            key: "blog16",
             url: 'http://smodcast.com/channels/feab/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -153,15 +137,7 @@
             dataPromise: null
         },
         {
-            key: "blog19",
-            url: 'http://smodcast.com/channels/feab/feed/',
-            title: 'tbd',
-            updated: 'tbd',
-            acquireSyndication: acquireSyndication,
-            dataPromise: null
-        },
-        {
-            key: "blog20",
+            key: "blog17",
             url: 'http://smodcast.com/channels/highlands-a-peephole-history/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -169,7 +145,7 @@
             dataPromise: null
         },
         {
-            key: "blog21",
+            key: "blog18",
             url: 'http://smodcast.com/channels/waking-from-the-american-dream/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -177,7 +153,7 @@
             dataPromise: null
         },
         {
-            key: "blog22",
+            key: "blog19",
             url: 'http://smodcast.com/channels/smodco-smorning-show/feed',
             title: 'tbd',
             updated: 'tbd',
@@ -185,7 +161,7 @@
             dataPromise: null
         },
         {
-            key: "blog23",
+            key: "blog20",
             url: 'http://smodcast.com/channels/smoviemakers/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -193,7 +169,7 @@
             dataPromise: null
         },
         {
-            key: "blog24",
+            key: "blog21",
             url: 'http://smodcast.com/channels/sminterview/feed/',
             title: 'tbd',
             updated: 'tbd',
@@ -201,21 +177,13 @@
             dataPromise: null
         },
         {
-            key: "blog25",
+            key: "blog22",
             url: 'http://smodcast.com/channels/bagged-boarded-live/feed/',
             title: 'tbd',
             updated: 'tbd',
             acquireSyndication: acquireSyndication,
             dataPromise: null
-        },
-        {
-            key: "blog26",
-            url: 'http://smodcast.com/channels/bagged-boarded-live/feed/',
-            title: 'tbd',
-            updated: 'tbd',
-            acquireSyndication: acquireSyndication,
-            dataPromise: null
-        },
+        }
       ];
     
     // ListView data binding
