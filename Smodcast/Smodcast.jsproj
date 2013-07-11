@@ -69,6 +69,7 @@
     <Content Include="pages\split\split.html" />
     <Content Include="pages\split\split.js" />
     <Content Include="default.html" />
+    <Content Include="partials\page.html" />
     <None Include="Smodcast_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
