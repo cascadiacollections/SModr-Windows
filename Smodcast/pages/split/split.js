@@ -49,6 +49,15 @@
                 // appear in the ListView.
                 listView.selection.set(Math.max(this._itemSelectionIndex, 0));
             }
+
+            // Event Handlers
+            var streamButton = element.querySelector("#stream");
+            streamButton.addEventListener("click", this.streamButtonClick, false);
+        },
+
+        // Stream Button Click Event Handler
+        streamButtonClick: function (mouseEvent) {
+            console.log("clicked");
         },
 
         unload: function () {
@@ -154,5 +163,6 @@
                 document.querySelector(".itemlist").focus();
             }
         }
+
     });
 })();

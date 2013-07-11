@@ -45,12 +45,23 @@
         <div class="articlesection" aria-atomic="true" aria-label="Item detail column" aria-live="assertive">
             <article>
                 <header class="header">
+
+                    <!-- Play button -->
+                    <button id="stream" style="border: none;">
+                        <img src="../../images/playIcon.png" alt="Play Button"/>
+                    </button><!-- /Play Button -->
+
                     <div class="text">
-                        <h2 class="win-type-ellipsis" data-win-bind="textContent: title"></h2>
                         <h4 class="" data-win-bind="textContent: pubDate"></h4>
+                        <h2 class="win-type-ellipsis" data-win-bind="textContent: title"></h2>
                     </div>
                 </header>
-                <button id="stream-btn">Stream</button>
+
+                <!-- Media Controls -->
+                <audio msAudioCategory="BackgroundCapableMedia" controls="controls"> 
+                    <source src="" /> 
+                </audio><!-- /Media Controls -->
+
                 <div class="" data-win-bind="innerHTML: description"></div>
             </article>
         </div><!-- /Episode View -->

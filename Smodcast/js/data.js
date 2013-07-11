@@ -47,7 +47,176 @@
             updated: 'tbd',
             acquireSyndication: acquireSyndication,
             dataPromise: null
-        }];
+        },
+        {
+            key: "blog6",
+            url: 'http://smodcast.com/channels/jay-silent-bob-get-old/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog7",
+            url: 'http://smodcast.com/channels/fatman-on-batman/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog8",
+            url: 'http://smodcast.com/channels/the-secret-stash/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog9",
+            url: 'http://smodcast.com/channels/the-secret-stash/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog10",
+            url: 'http://smodcast.com/channels/last-week-on-earth-with-ben-gleib/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog11",
+            url: 'http://smodcast.com/channels/last-week-on-earth-with-ben-gleib/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog12",
+            url: 'http://smodcast.com/channels/netheads/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog13",
+            url: 'http://smodcast.com/channels/get-up-on-this/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog14",
+            url: 'http://smodcast.com/channels/team-jack/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog15",
+            url: 'http://smodcast.com/channels/having-sex/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog16",
+            url: 'http://smodcast.com/channels/tha-breaks/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog17",
+            url: 'http://smodcast.com/channels/sound-bite-nation/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog18",
+            url: 'http://smodcast.com/channels/feab/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog19",
+            url: 'http://smodcast.com/channels/feab/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog20",
+            url: 'http://smodcast.com/channels/highlands-a-peephole-history/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog21",
+            url: 'http://smodcast.com/channels/waking-from-the-american-dream/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog22",
+            url: 'http://smodcast.com/channels/smodco-smorning-show/feed',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog23",
+            url: 'http://smodcast.com/channels/smoviemakers/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog24",
+            url: 'http://smodcast.com/channels/sminterview/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog25",
+            url: 'http://smodcast.com/channels/bagged-boarded-live/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+        {
+            key: "blog26",
+            url: 'http://smodcast.com/channels/bagged-boarded-live/feed/',
+            title: 'tbd',
+            updated: 'tbd',
+            acquireSyndication: acquireSyndication,
+            dataPromise: null
+        },
+      ];
     
     // ListView data binding
     var blogPosts = new WinJS.Binding.List();
@@ -130,14 +299,16 @@
             var episodeTitle = episode.querySelector("title").textContent;
             var episodePubDate = episode.querySelector("pubDate").textContent;
             var episodeDescription = episode.querySelector("description").textContent;
-            // var staticContent = toStaticHTML(post.querySelector("content").textContent);
+
+            // Format Pub Date UTC String to shorthand
+            var formattedPubDate = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("shortdate").format(new Date(episodePubDate));
 
             // Push episode info to array
             bPosts.push({
                 group: feed,
                 key: feed.title,
                 title: episodeTitle,
-                pubDate: episodePubDate,
+                pubDate: formattedPubDate,
                 description: episodeDescription
             });
         }
