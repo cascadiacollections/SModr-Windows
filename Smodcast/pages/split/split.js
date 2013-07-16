@@ -31,8 +31,14 @@
             listView.itemDataSource = this._items.dataSource;
             listView.itemTemplate = element.querySelector(".itemtemplate");
             listView.onselectionchanged = this._selectionChanged.bind(this);
-            listView.layout = new ui.ListLayout();
-
+            /** TODO: depending on state 
+            if (viewState === appViewState.snapped) {
+                listView.layout = new ui.ListLayout();
+            } else {
+                listView.layout = new ui.GridLayout();
+            }
+            */
+            listView.layout = new ui.GridLayout();
             this._updateVisibility();
             if (this._isSingleColumn()) {
                 if (this._itemSelectionIndex >= 0) {
@@ -51,8 +57,8 @@
             }
 
             // Event Handlers
-            var streamButton = element.querySelector("#stream");
-            streamButton.addEventListener("click", this.streamButtonClick, false);
+            //var streamButton = element.querySelector("#stream");
+            //streamButton.addEventListener("click", this.streamButtonClick, false);
         },
 
         // Stream Button Click Event Handler

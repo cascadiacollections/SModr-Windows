@@ -1,13 +1,15 @@
 ﻿.splitpage {
-    -ms-grid-columns: 106px 534px 50px 1fr;
+    -ms-grid-columns: auto 534px calc(100%-534px);
     display: -ms-grid;
+    background: gray;
     height: 100%;
     width: 100%;
 }
 
     .splitpage header[role=banner] {
         -ms-grid-column: 1;
-        -ms-grid-column-span: 2;
+        -ms-grid-column-span: 3;
+        background: red;
     }
 
     .splitpage header[role=banner] .pagetitle {
@@ -17,14 +19,14 @@
 
     .splitpage .itemlistsection {
         -ms-grid-row: 2;
-        -ms-grid-column: 2;
+        -ms-grid-column: 3;
+        background: blue;
     }
 
         .splitpage .itemlistsection .itemlist {
             height: 100%;
-            position: relative;
             width: 100%;
-            z-index: 0;
+            position: relative;
         }
 
             .splitpage .itemlistsection .itemlist .win-vertical.win-viewport .win-surface {
@@ -76,14 +78,16 @@
                     }
 
     .splitpage .articlesection {
-        -ms-grid-column: 4;
-        -ms-grid-row: 1;
+        -ms-grid-column: 2;
+        -ms-grid-row: 2;
         -ms-grid-row-span: 2;
         overflow-y: auto;
         position: relative;
         z-index: 0;
-        padding-left: 0;
-        padding-right: 120px;
+        width: 534px;
+        padding-right: 40px;
+        padding-left: 40px;
+        background: #4099ff;
     }
 
     [dir=rtl] .splitpage .articlesection {
@@ -93,14 +97,16 @@
 
         .splitpage .articlesection header {
             -ms-grid-columns: 180px 20px 1fr;
-            -ms-grid-rows: 180px;
+            -ms-grid-rows: auto;
             display: -ms-grid;
             margin-bottom: 5px;
             margin-top: 60px;
         }
 
             .splitpage .articlesection header .text {
-                -ms-grid-column: 3;
+                -ms-grid-column: 1;
+                -ms-grid-column-span: 3;
+                background: red;
             }
 
                 .splitpage .articlesection header .text .article-subtitle {

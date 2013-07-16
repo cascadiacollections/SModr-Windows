@@ -19,8 +19,12 @@
     <!-- This template is used to display each item in the ListView declared below. -->
     <div class="itemtemplate" data-win-control="WinJS.Binding.Template">
         <div class="item">
-           <div class="item-date">
-           </div>
+            <div class="item-date">
+                <!-- Play button -->
+                <button id="stream" style="border: none;">
+                <img src="../../images/playIcon.png" alt="Play Button"/>
+                </button><!-- /Play Button -->
+            </div>
             <div class="item-info">
                 <h3 class="item-title win-type-ellipsis" data-win-bind="textContent: title"></h3>
             </div>
@@ -36,21 +40,10 @@
             </h1>
         </header>
 
-        <!-- Side List View of Episodes -->
-        <div class="itemlistsection" aria-label="List column">
-            <div class="itemlist win-selectionstylefilled" aria-label="List of this group's items" data-win-control="WinJS.UI.ListView" data-win-options="{ selectionMode: 'single', swipeBehavior: 'none', tapBehavior: 'toggleSelect' }"></div>
-        </div><!-- /listview -->
-
         <!-- Episode View -->
         <div class="articlesection" aria-atomic="true" aria-label="Item detail column" aria-live="assertive">
             <article>
                 <header class="header">
-
-                    <!-- Play button -->
-                    <button id="stream" style="border: none;">
-                        <img src="../../images/playIcon.png" alt="Play Button"/>
-                    </button><!-- /Play Button -->
-
                     <div class="text">
                         <h4 class="" data-win-bind="textContent: pubDate"></h4>
                         <h2 class="win-type-ellipsis" data-win-bind="textContent: title"></h2>
@@ -60,6 +53,23 @@
                 <div class="" data-win-bind="innerHTML: description"></div>
             </article>
         </div><!-- /Episode View -->
+
+        <!-- Side List View of Episodes -->
+        <div class="itemlistsection" aria-label="List column">
+            <div class="itemlist win-selectionstylefilled" 
+                aria-label="List of this group's items" 
+                data-win-control="WinJS.UI.ListView" 
+                data-win-options="
+                { 
+                    layout: { 
+                        type: WinJS.UI.GridLayout 
+                    }, 
+                    selectionMode: 'single', 
+                    swipeBehavior: 'none', 
+                    tapBehavior: 'toggleSelect' 
+                }">
+            </div>
+        </div><!-- /listview -->
     </div><!-- /Page Content -->
 </body>
 </html>
