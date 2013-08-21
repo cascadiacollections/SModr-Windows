@@ -30,6 +30,16 @@
             listView.itemDataSource = this._items.dataSource;
             listView.itemTemplate = element.querySelector(".itemtemplate");
             listView.onselectionchanged = this._selectionChanged.bind(this);
+            listView.addEventListener("iteminvoked", episodeInvoked);
+
+            function episodeInvoked(eventObject) {
+                eventObject.detail.itemPromise.done(function (invokedItem) {
+                    console.log(invokedItem.data.url);
+                    MediaPlayer.playlist.push(invokedItem.data.url);
+                    MediaPlayer.currentItemIndex = 0;
+                    MediaPlayer.updatePlayer();
+                });
+            }
 
             this._updateVisibility();
             if (this._isSingleColumn()) {
@@ -112,7 +122,7 @@
         _selectionChanged: function (args) {
             var listView = args.currentTarget.winControl; 
             var details;
-            // By default, the selection is restriced to a single item.
+            // By default, the selection is restricted to a single item.
             listView.selection.getItems().done(function updateDetails(items) {
                 if (items.length > 0) {
                     this._itemSelectionIndex = items[0].index;

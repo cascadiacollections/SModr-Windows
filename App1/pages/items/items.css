@@ -1,0 +1,59 @@
+﻿.itemspage section[role=main] {
+    -ms-grid-row: 1;
+    -ms-grid-row-span: 2;
+}
+
+/* This selector is used to prevent ui-dark/light.css from overwriting changes
+   to .win-surface. */
+.itemspage .itemslist .win-horizontal.win-viewport .win-surface {
+    margin-bottom: 60px;
+    margin-left: 115px;
+    margin-right: 115px;
+    margin-top: 135px;
+}
+
+.itemspage .itemslist {
+    height: 100%;
+    position: relative;
+    width: 100%;
+    z-index: 0;
+}
+
+    .itemspage .itemslist .item {
+        -ms-grid-columns: 1fr;
+        -ms-grid-rows: 1fr 90px;
+        display: -ms-grid;
+        height: 250px;
+        width: 250px;
+    }
+
+        .itemspage .itemslist .item .item-image {
+            -ms-grid-row-span: 2;
+        }
+
+        .itemspage .itemslist .item .item-overlay {
+            -ms-grid-row: 2;
+            -ms-grid-rows: 1fr 21px;
+            background: rgba(0, 0, 0, 0.65);
+            display: -ms-grid;
+            padding: 6px 15px 2px 15px;
+        }
+
+            .itemspage .itemslist .item .item-overlay .item-title {
+                -ms-grid-row: 1;
+                color: rgba(255,255,255,0.87);
+                overflow: hidden;
+                width: 220px;
+            }
+
+            .itemspage .itemslist .item .item-overlay .item-subtitle {
+                -ms-grid-row: 2;
+                color: rgba(255,255,255,0.6);
+                width: 220px;
+            }
+
+@media screen and (-ms-high-contrast) {
+    .itemspage .itemslist .item .item-overlay {
+        color: WindowText;
+    }
+}

@@ -1,0 +1,149 @@
+﻿.splitpage {
+    -ms-grid-columns: 106px 314px 1fr;
+    display: -ms-grid;
+    height: 100%;
+    width: 100%;
+}
+
+    .splitpage header[role=banner] {
+        -ms-grid-column: 1;
+        -ms-grid-column-span: 2;
+    }
+
+        .splitpage header[role=banner] .pagetitle {
+            overflow: hidden;
+            width: calc(100% - 20px);
+        }
+
+    .splitpage .itemlistsection {
+        -ms-grid-column: 2;
+        -ms-grid-row: 2;
+    }
+
+        .splitpage .itemlistsection .itemlist {
+            height: 100%;
+            position: relative;
+            width: 100%;
+            z-index: 0;
+        }
+
+            .splitpage .itemlistsection .itemlist .win-vertical.win-viewport .win-surface {
+                margin-bottom: 60px;
+            }
+
+                .splitpage .itemlistsection .itemlist .win-vertical.win-viewport .win-surface .win-itemsblock {
+                    overflow: visible;
+                }
+
+            .splitpage .itemlistsection .itemlist .win-container {
+                margin-bottom: 16px;
+                margin-top: 5px;
+                width: calc(100% - 28px);
+            }
+
+                .splitpage .itemlistsection .itemlist .win-container .win-selectioncheckmark, .splitpage .itemlistsection .itemlist .win-container .win-selectioncheckmarkbackground {
+                    display: none;
+                }
+
+            .splitpage .itemlistsection .itemlist .item {
+                -ms-grid-columns: 60px 10px 1fr;
+                -ms-grid-rows: 1fr;
+                display: -ms-grid;
+                height: 60px;
+                padding: 7px;
+            }
+
+                .splitpage .itemlistsection .itemlist .item .item-image {
+                    height: 60px;
+                    width: 60px;
+                }
+
+                .splitpage .itemlistsection .itemlist .item .item-info {
+                    -ms-grid-column: 3;
+                    overflow: hidden;
+                }
+
+                    .splitpage .itemlistsection .itemlist .item .item-info .item-title {
+                        margin-top: 4px;
+                        margin-bottom: 1px;
+                    }
+
+                    .splitpage .itemlistsection .itemlist .item .item-info .item-subtitle {
+                        opacity: 0.6;
+                    }
+
+                    .splitpage .itemlistsection .itemlist .item .item-info .item-description {
+                        max-height: 60px;
+                        overflow: hidden;
+                    }
+
+    .splitpage .articlesection {
+        -ms-grid-column: 3;
+        -ms-grid-row: 1;
+        -ms-grid-row-span: 2;
+        margin-top: 60px;
+        overflow-y: auto;
+        padding-left: 60px;
+        padding-right: 66px;
+        position: relative;
+        z-index: 0;
+    }
+
+        .splitpage .articlesection:-ms-lang(ar, dv, fa, he, ku-Arab, pa-Arab, prs, ps, sd-Arab, syr, ug, ur, qps-plocm) {
+            padding-left: 66px;
+            padding-right: 60px;
+        }
+
+        .splitpage .articlesection header {
+            -ms-grid-columns: 180px 20px 1fr;
+            -ms-grid-rows: 180px;
+            display: -ms-grid;
+            margin-bottom: 20px;
+        }
+
+            .splitpage .articlesection header .text {
+                -ms-grid-column: 3;
+            }
+
+                .splitpage .articlesection header .text .article-subtitle {
+                    margin-top: 4px;
+                }
+
+            .splitpage .articlesection header .article-image {
+                height: 180px;
+                width: 180px;
+            }
+
+        .splitpage .articlesection .article-content {
+            overflow-y: auto;
+        }
+
+            .splitpage .articlesection .article-content p {
+                margin-bottom: 16pt;
+                margin-top: 0;
+            }
+
+@media (max-width: 767px) {
+    .splitpage.groupdetail {
+        -ms-grid-columns: 106px 1fr;
+    }
+
+        .splitpage.groupdetail .articlesection {
+            display: none;
+        }
+
+    .splitpage.itemdetail {
+        -ms-grid-columns: 60px 1fr;
+    }
+
+        .splitpage.itemdetail .itemlistsection {
+            display: none;
+        }
+
+        .splitpage.itemdetail .articlesection {
+            -ms-grid-column: 2;
+            -ms-grid-row: 2;
+            -ms-grid-row-span: 1;
+            margin-top: 12px;
+        }
+}

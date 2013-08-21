@@ -185,7 +185,7 @@
             dataPromise: null
         }
       ];
-    
+
     // ListView data binding
     var blogPosts = new WinJS.Binding.List();
 
@@ -207,10 +207,10 @@
     function acquireSyndication(url) {
         // Call xhr for the URL to get results asynchronously
         return WinJS.xhr({
-                url: url,
-                responseType: "document"
-                //headers: { "If-Modified-Since": "Mon, 27 Mar 1972 00:00:00 GMT" }
-            });
+            url: url,
+            responseType: "document"
+            //headers: { "If-Modified-Since": "Mon, 27 Mar 1972 00:00:00 GMT" }
+        });
     }
 
     /** Get Channel's Episodes */
@@ -221,13 +221,13 @@
             channels.forEach(function (feed) {
                 feed.dataPromise.then(function (response) {
                     var document = response.responseXML;
-                    
+
                     if (document) {
                         // Get Channel Attributes
                         feed.title = document.querySelector("channel > title").textContent;
                         feed.subtitle = document.querySelector("channel > description").textContent;
                         feed.backgroundImage = document.querySelector("channel > image > url").textContent;
-                        
+
                         // Get Channel's episodes
                         getItemsFromXml(document, blogPosts, feed);
                     }
@@ -266,9 +266,17 @@
             var episodeTitle = episode.querySelector("title").textContent;
             var episodePubDate = episode.querySelector("pubDate").textContent;
             var episodeDescription = episode.querySelector("description").textContent;
+            var episodeUrl;
 
-            // Format Pub Date UTC String to shorthand
-            var formattedPubDate = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("shortdate").format(new Date(episodePubDate));
+            // TODO : Ghetto
+            if (episode.querySelector("enclosure")) {
+                episodeUrl = episode.querySelector("enclosure").getAttribute('url');
+            }
+            else {
+                episodeUrl = '';
+            }
+
+            var formattedPubDate = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("shortdate").format(new Date(episodePubDate)); // TODO: put in view logic
 
             // Push episode info to array
             bPosts.push({
@@ -276,14 +284,15 @@
                 key: feed.title,
                 title: episodeTitle,
                 pubDate: formattedPubDate,
-                description: episodeDescription
+                description: episodeDescription,
+                url: episodeUrl
             });
         }
     }
-    
+
     // ListView WinJS Control
     var list = getBlogPosts();
-    
+
     // Create grouped listview items
     // ReSharper disable UnusedLocals
     var groupedItems = list.createGrouped(

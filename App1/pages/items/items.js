@@ -2,8 +2,7 @@
     "use strict";
 
     WinJS.UI.Pages.define("/pages/items/items.html", {
-        // This function is called whenever a user navigates to this page. It
-        // populates the page elements with the app's data.
+        // Page Ready
         ready: function (element, options) {
             var listView = element.querySelector(".itemslist").winControl;
             listView.itemDataSource = Data.groups.dataSource;
@@ -13,13 +12,11 @@
             listView.element.focus();
         },
 
-        // This function updates the page layout in response to layout changes.
+        // Layout Changed
         updateLayout: function (element) {
-            /// <param name="element" domElement="true" />
 
-            // TODO: Respond to changes in layout.
         },
-
+        // Navigate to item's selected split page
         _itemInvoked: function (args) {
             var groupKey = Data.groups.getAt(args.detail.itemIndex).key;
             WinJS.Navigation.navigate("/pages/split/split.html", { groupKey: groupKey });
