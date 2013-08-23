@@ -343,4 +343,9 @@
         }
         return null;
     }
+
+    // Check Network Connectivity
+    function checkNetwork() {
+        
+    }
 })();

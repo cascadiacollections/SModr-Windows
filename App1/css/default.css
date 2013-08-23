@@ -1,10 +1,29 @@
-﻿#mediaControls {
+﻿/* UI Components */
+#indeterminate {
+    width: 100%;
+}
+
+/* Media Controls Bar */
+#mediaControls {
+    position: relative;
     width: 100%;
     background-color: black;
 }
-/* Stock */
+
+/* Now Playing Text */
+#nowPlayingWrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    height: 30%;
+    margin: auto;
+    color: white;
+}
+
+/* Stock App CSS */
 #contenthost {
-    height: 94%;
+    height: 93%; /* TODO: Hack, fix so it isn't absolute sizing */
     width: 100%;
 }
 

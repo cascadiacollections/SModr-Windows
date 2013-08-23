@@ -18,8 +18,10 @@
         ready: function (element, options) {
             var listView = element.querySelector(".itemlist").winControl;
 
-            // Store information about the group and selection that this page will
-            // display.
+            // Update Layout based on View State
+            this.updateLayout(element, Windows.UI.ViewManagement.ApplicationView.value, null);
+
+            // Store information about the group and selection that this page will display.
             this._group = Data.resolveGroupReference(options.groupKey);
             this._items = Data.getItemsFromGroup(this._group);
             this._itemSelectionIndex = (options && "selectedIndex" in options) ? options.selectedIndex : -1;
@@ -34,10 +36,10 @@
 
             function episodeInvoked(eventObject) {
                 eventObject.detail.itemPromise.done(function (invokedItem) {
-                    console.log(invokedItem.data.url);
                     MediaPlayer.playlist.push(invokedItem.data.url);
                     MediaPlayer.currentItemIndex = 0;
                     MediaPlayer.updatePlayer();
+                    MediaPlayer.updateNowPlaying(invokedItem.data.title);
                 });
             }
 
@@ -59,58 +61,33 @@
             this._items.dispose();
         },
 
-        updateLayout: function (element) {
-            var isSingleColumn = this._isSingleColumn();
-            if (this._wasSingleColumn === isSingleColumn) {
-                return;
+        updateLayout: function (element, viewState, lastViewState) {
+            // Respond to changes in viewState.
+
+            // Get the ListView control. 
+            var viewStateExampleListView = element.querySelector(".itemlist").winControl;
+
+            // Use a ListLayout if the app is snapped or in full-screen portrait mode. 
+            if (viewState === Windows.UI.ViewManagement.ApplicationViewState.snapped ||
+                viewState === Windows.UI.ViewManagement.ApplicationViewState.fullScreenPortrait) {
+
+                // If layout.Horizontal is false, the ListView
+                // is already using a ListLayout, so we don't
+                // have to do anything. We only need to switch
+                // layouts when layout.horizontal is true. 
+                if (viewStateExampleListView.layout.horizontal) {
+                    viewStateExampleListView.layout = new WinJS.UI.ListLayout();
+                }
             }
 
-            var listView = element.querySelector(".itemlist").winControl;
-            var firstVisible = listView.indexOfFirstVisible;
-            this._updateVisibility();
-
-            var handler = function (e) {
-                listView.removeEventListener("contentanimating", handler, false);
-                e.preventDefault();
+                // Use a GridLayout if the app isn't snapped or in full-screen portrait mode. 
+            else {
+                // Only switch layouts if layout.horizontal is false. 
+                if (!viewStateExampleListView.layout.horizontal) {
+                    viewStateExampleListView.layout = new WinJS.UI.GridLayout();
+                }
             }
 
-            if (isSingleColumn) {
-                listView.selection.clear();
-                if (this._itemSelectionIndex >= 0) {
-                    // If the app has snapped into a single-column detail view,
-                    // add the single-column list view to the backstack.
-                    nav.history.current.state = {
-                        groupKey: this._group.key,
-                        selectedIndex: this._itemSelectionIndex
-                    };
-                    nav.history.backStack.push({
-                        location: "/pages/split/split.html",
-                        state: { groupKey: this._group.key }
-                    });
-                    element.querySelector(".articlesection").focus();
-                } else {
-                    listView.addEventListener("contentanimating", handler, false);
-                    if (firstVisible >= 0 && listView.itemDataSource.list.length > 0) {
-                        listView.indexOfFirstVisible = firstVisible;
-                    }
-                    listView.forceLayout();
-                }
-            } else {
-                // If the app has unsnapped into the two-column view, remove any
-                // splitPage instances that got added to the backstack.
-                if (nav.canGoBack && nav.history.backStack[nav.history.backStack.length - 1].location === "/pages/split/split.html") {
-                    nav.history.backStack.pop();
-                }
-
-                listView.addEventListener("contentanimating", handler, false);
-                if (firstVisible >= 0 && listView.itemDataSource.list.length > 0) {
-                    listView.indexOfFirstVisible = firstVisible;
-                }
-                listView.forceLayout();
-                listView.selection.set(this._itemSelectionIndex >= 0 ? this._itemSelectionIndex : Math.max(firstVisible, 0));
-            }
-
-            this._wasSingleColumn = isSingleColumn;
         },
 
         // This function checks if the list and details columns should be displayed
@@ -131,10 +108,7 @@
                         // selected item's details.
                         nav.navigate("/pages/split/split.html", { groupKey: this._group.key, selectedIndex: this._itemSelectionIndex });
                     } else {
-                        // If fullscreen or filled, update the details column with new data.
-                        details = document.querySelector(".articlesection");
-                        binding.processAll(details, items[0].data);
-                        details.scrollTop = 0;
+
                     }
                 }
             }.bind(this));

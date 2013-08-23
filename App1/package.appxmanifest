@@ -1,47 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-
-  <Identity
-    Name="ae12e86b-a577-4f7c-abfe-2a71e6807919"
-    Version="1.0.0.0"
-    Publisher="CN=Kevin" />
-
+  <Identity Name="40739KevinCoughlin.Smodr" Version="1.1.0.4" Publisher="CN=AC6B41A6-C0F1-49DD-8E12-5A2001C77230" />
   <Properties>
-    <DisplayName>App1</DisplayName>
-    <PublisherDisplayName>Kevin</PublisherDisplayName>
+    <DisplayName>Smodr</DisplayName>
+    <PublisherDisplayName>Kevin Coughlin</PublisherDisplayName>
     <Logo>images\storelogo.png</Logo>
   </Properties>
-
   <Prerequisites>
     <OSMinVersion>6.3.0</OSMinVersion>
     <OSMaxVersionTested>6.3.0</OSMaxVersionTested>
   </Prerequisites>
-
   <Resources>
     <Resource Language="x-generate" />
   </Resources>
-
   <Applications>
-    <Application 
-      Id="App"
-      StartPage="default.html">
-
-      <m2:VisualElements
-        DisplayName="App1"
-        Description="App1"
-        ForegroundText="light"
-        BackgroundColor="#464646"
-        Square150x150Logo="images\Logo.png"
-        Square30x30Logo="images\SmallLogo.png">
-
-        <m2:SplashScreen Image="images\splashscreen.png" />
-
+    <Application Id="App" StartPage="default.html">
+      <m2:VisualElements DisplayName="Smodr" Description="A Windows 8 Store application for Kevin Smith's SModcast podcast network." ForegroundText="light" BackgroundColor="#464646" Square150x150Logo="images\square150x150.png" Square30x30Logo="images\square30x30.png">
+        <m2:DefaultTile ShortName="Smodr" Square310x310Logo="images\square310x310.png" Wide310x150Logo="images\wide310x150.png" Square70x70Logo="images\square70x70.png" DefaultSize="wide310x150Logo" />
+        <m2:SplashScreen Image="images\splashscreen.png" BackgroundColor="#1e3567" />
+        <m2:InitialRotationPreference>
+          <m2:Rotation Preference="landscape" />
+        </m2:InitialRotationPreference>
+        <m2:ApplicationView MinWidth="default" />
       </m2:VisualElements>
     </Application>
   </Applications>
-
   <Capabilities>
     <Capability Name="internetClient" />
   </Capabilities>
-
 </Package>

@@ -16,12 +16,14 @@
     <script src="/js/navigator.js"></script>
 </head>
 <body>
+    <!--<progress id="indeterminate"></progress>-->
     <div id="contenthost" data-win-control="Application.PageControlNavigator" data-win-options="{home: '/pages/items/items.html'}"></div>
     <!-- <div id="appbar" data-win-control="WinJS.UI.AppBar">
         <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{id:'cmd', label:'Command', icon:'placeholder'}" type="button"></button>
     </div> -->
     <div id="mediaControls">
         <audio id="player" controls="controls" msaudiocategory="BackgroundCapableMedia"></audio>
+        <span id="nowPlayingWrapper"><strong>Now Playing: </strong><span id="nowPlaying"></span></span>
     </div>
 </body>
 </html>

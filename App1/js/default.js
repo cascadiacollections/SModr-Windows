@@ -12,9 +12,26 @@
     var playlist = [];      // contains list of media files selected by the user.
     var currentItemIndex;   // keeps track of current item playing.
 
+    // ERROR: Handle Unhandled Errors Here
+    // TODO: More robust error handling across application
+    app.addEventListener("error", function (error) {
+        var dialog = Windows.UI.Popups.MessageDialog;
+        var msg = new md(err.detail.message, "An error occurred.");
+        /*
+        msg.commands.append(
+            new Windows.UI.Popups.UICommand("Close", function (command) {
+
+            })
+        );
+        */
+        msg.showAsync();
+    });
+
+    // ACTIVATED: Application Activated
     app.addEventListener("activated", function (args) {
         if (args.detail.kind === activation.ActivationKind.launch) {
             if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
+                // Initialize Media Player
                 smtc = Windows.Media.SystemMediaTransportControls.getForCurrentView();
                 player = document.getElementById("player");
                 player.addEventListener("ended", itemEnded, false);
@@ -158,6 +175,12 @@
         }
     }
 
+    // Update Now Playing Text
+    // TODO: Use data binding?
+    function updateNowPlaying(title) {
+        WinJS.Utilities.setInnerHTML(document.getElementById("nowPlaying"), title);
+    }
+
     app.oncheckpoint = function (args) {
         app.sessionState.history = nav.history;
     };
@@ -167,7 +190,8 @@
         playlist: playlist,
         currentItemIndex: currentItemIndex,
         updatePlayer: updatePlayer,
-        player: player
+        player: player,
+        updateNowPlaying: updateNowPlaying,
     });
 
     app.start();
