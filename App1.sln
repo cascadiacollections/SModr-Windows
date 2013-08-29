@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.20623.1 VSUPREVIEW
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "App1", "App1\App1.jsproj", "{AE12E86B-A577-4F7C-ABFE-2A71E6807919}"
+Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "Smodr", "App1\Smodr.jsproj", "{AE12E86B-A577-4F7C-ABFE-2A71E6807919}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
