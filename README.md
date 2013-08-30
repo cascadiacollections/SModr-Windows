@@ -24,3 +24,4 @@ Installation
 License
 -------
 
+MIT
