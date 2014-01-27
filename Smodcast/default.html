@@ -2,22 +2,55 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>SModcast</title>
+    <title>Smodcast</title>
 
     <!-- WinJS references -->
-    <link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
-    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
-    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
+    <link href="//Microsoft.WinJS.2.0/css/ui-light.css" rel="stylesheet" />
+    <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
+    <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
 
     <!-- Smodcast references -->
     <link href="/css/default.css" rel="stylesheet" />
-    <script src="/js/data.js"></script>
+    <script src="/js/dataservice.js"></script>
     <script src="/js/default.js"></script>
-    <script src="/js/navigator.js"></script>
-
 </head>
 <body>
-    <div id="contenthost" data-win-control="Application.PageControlNavigator" data-win-options="{ home: '/pages/items/items.html' }"></div>
-    <div id="footer" data-win-control="WinJS.UI.HtmlControl" data-win-options="{uri: '/partials/page.html'}"></div> 
+    <!-- App Header -->
+    <div id="appHeader">
+        <h1>SModcast</h1>
+    </div> 
+
+    <!--
+    <div class="topRight">
+        <p id="nowPlaying"></p>
+    </div>
+    -->
+
+    <!-- Item template -->
+    <div id="iconTextApplicationsTemplate" data-win-control="WinJS.Binding.Template">
+        <div class="iconTextApplications">
+            <h4 class="win-type-large" data-win-bind="innerText: title"></h4>
+            <h6 data-win-bind="innerText: description"></h6>
+        </div>
+    </div>
+
+    <!-- ListView -->
+    <div id="iconTextApplications"
+         class="win-selectionstylefilled"
+         data-win-control="WinJS.UI.ListView"
+         data-win-options="{ layout: { type: WinJS.UI.GridLayout }, selectionMode: 'none'}">
+    </div>
+
+    <!-- Media Controls -->
+    <div id="mediaControls" class="bottomLeft">
+        <!-- Media Controls -->
+        <audio id="mediaAudio"
+               controls
+               src=""
+               onpause="Smodr.mediaPaused(event)"
+               onplaying="Smodr.mediaPlaying(event)"
+               onended="Smodr.mediaEnded(event)" >
+        </audio>
+    </div>
 </body>
 </html>
