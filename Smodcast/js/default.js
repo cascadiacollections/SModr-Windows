@@ -13,6 +13,11 @@
             if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
                 // Newly launched
 
+                // Add privacy policy to settings charm
+                WinJS.Application.onsettings = function (e) {
+                    e.detail.applicationcommands = { "help": { title: "Privacy Statement", href: "privacy-statement.html" } };
+                    WinJS.UI.SettingsFlyout.populateSettings(e);
+                };
 
             } else {
                 // Activated

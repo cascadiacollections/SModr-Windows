@@ -79,6 +79,7 @@
     <Content Include="js\dataservice.js" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <Content Include="privacy-statement.html" />
     <None Include="Smodcast_StoreKey.pfx" />
     <None Include="Package.StoreAssociation.xml" />
     <None Include="Smodcast_TemporaryKey.pfx" />
