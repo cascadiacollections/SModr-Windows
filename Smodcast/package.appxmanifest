@@ -24,6 +24,13 @@
         </m2:InitialRotationPreference>
         <m2:ApplicationView MinWidth="default" />
       </m2:VisualElements>
+      <Extensions>
+        <Extension Category="windows.backgroundTasks" StartPage="default.html">
+          <BackgroundTasks>
+            <Task Type="audio" />
+          </BackgroundTasks>
+        </Extension>
+      </Extensions>
     </Application>
   </Applications>
   <Capabilities>

@@ -44,13 +44,13 @@
     <!-- Media Controls -->
     <div id="mediaControls" class="bottomLeft">
         <!-- Media Controls -->
-        <audio id="mediaAudio"
-               controls
+        <audio id="player"
+               msaudiocategory="BackgroundCapableMedia" 
+               controls="controls"
                src=""
                onpause="Smodr.mediaPaused(event)"
                onplaying="Smodr.mediaPlaying(event)"
-               onended="Smodr.mediaEnded(event)" >
-        </audio>
+               onended="Smodr.mediaEnded(event)"></audio>
     </div>
 </body>
 </html>
