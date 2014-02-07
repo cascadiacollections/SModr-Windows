@@ -41,7 +41,7 @@
 
 /* Episode Container Margin */
 #iconTextApplications .win-container {
-    margin: 5px 10px;
+    margin: 8px 8px;
 }
 
     /* Hide Hover Outline for Edge-to-Edge Items */
@@ -53,12 +53,14 @@
 
 /* Episode Container */
 .iconTextApplications {
-    width: 210px;
+    background-color: #000;
+    color: #fff;
+    width: 420px;
     height: 100px;
     padding: 5px;
 }
 
-/* style the focus visual for edge-to-edge items */
+/* Style the focus visual for edge-to-edge items */
 #iconTextApplications .win-focusedoutline {
     width: calc(100% - 4px);
     height: calc(100% - 4px);
