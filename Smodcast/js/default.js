@@ -5,7 +5,8 @@
     var activation = Windows.ApplicationModel.Activation;
 
     // List of Smodcast Episodes
-    var episodesList = new WinJS.Binding.List();
+    var episodesList;
+    var episodesListView;
     var currentlyPlaying = {};
     var currentItemIndex = 0;
 
@@ -13,7 +14,6 @@
     var supportedAudioFormats = [".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".mp4", ".asf", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3",];
     var systemMediaControls;
     var player;
-
 
     app.onactivated = function (args) {
         if (args.detail.kind === activation.ActivationKind.launch) {
@@ -32,41 +32,43 @@
             }
             args.setPromise(WinJS.UI.processAll()
                 .then(function completed() {
-                    setupSystemMediaTransportControls();
 
-                    var episodesListView = document.getElementById('iconTextApplications').winControl,
-                        episodeListItemTemplate = document.getElementById('iconTextApplicationsTemplate');
+                    DataService.getEpisodes().done(function (episodes) {
+                        episodesList = new WinJS.Binding.List(episodes);
+                        episodesListView = document.getElementById('iconTextApplications').winControl;
+                        var episodeListItemTemplate = document.getElementById('iconTextApplicationsTemplate');
+                        episodesListView.itemTemplate = episodeListItemTemplate;
+                        episodesListView.itemDataSource = episodesList.dataSource;
+                        episodesListView.oniteminvoked = function (e) {
+                            e.detail.itemPromise.then(function (item) {
+                                // mp3 url is empty i.e. #139
+                                if (!item.data.mediaUrl) {
+                                    // Create the message dialog and set its content
+                                    var msg = new Windows.UI.Popups.MessageDialog("Unfortunately, this episode can not be streamed.");
+                                    msg.commands.append(new Windows.UI.Popups.UICommand("Close", closeCommandHandler));
+                                    msg.defaultCommandIndex = 0;
+                                    msg.cancelCommandIndex = 0;
+                                    msg.showAsync();
+
+                                    function closeCommandHandler() {
+
+                                    }
+
+                                    return;
+                                }
+                                systemMediaControls.isEnabled = true;
+                                setNewMediaItem(item.index);
+                            });
+                        };
+                    });
+
+                    setupSystemMediaTransportControls();
 
                     player = document.getElementById("player");
                     player.addEventListener("ended", mediaEnded, false);
                     player.addEventListener("playing", mediaPlaying, false);
                     player.addEventListener("pause", mediaPaused, false);
                     player.addEventListener("error", mediaError, false);
-
-                    episodesListView.itemTemplate = episodeListItemTemplate;
-                    episodesListView.itemDataSource = episodesList.dataSource;
-                    episodesListView.oniteminvoked = function (e) {
-                        e.detail.itemPromise.then(function (item) {
-                            // mp3 url is empty i.e. #139
-                            if (!item.data.mediaUrl) {
-                                // Create the message dialog and set its content
-                                var msg = new Windows.UI.Popups.MessageDialog("Unfortunately, this episode can not be streamed.");
-                                msg.commands.append(new Windows.UI.Popups.UICommand("Close", closeCommandHandler));
-                                msg.defaultCommandIndex = 0;
-                                msg.cancelCommandIndex = 0;
-                                msg.showAsync();
-
-                                function closeCommandHandler() {
-
-                                }
-
-                                return;
-                            }
-                            systemMediaControls.isEnabled = true;
-                            setNewMediaItem(item.index);
-                        });
-                    };
-
                 })
             )}
     };
@@ -110,9 +112,7 @@
         // End of playlist reached.  Stopping media playback
         player.autoplay = false;
         stopMedia();
-        var episodesListView = document.getElementById('iconTextApplications').winControl;
         episodesListView.selection.set(null);
-        WinJS.log && WinJS.log("end of playlist, stopping playback", "sample", "status");
         /* 
         TODO: Implement play next functionality
         var media = document.getElementById("mediaAudio");
