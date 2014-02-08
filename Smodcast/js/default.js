@@ -32,7 +32,6 @@
             }
             args.setPromise(WinJS.UI.processAll()
                 .then(function completed() {
-
                     DataService.getEpisodes().done(function (episodes) {
                         episodesList = new WinJS.Binding.List(episodes);
                         episodesListView = document.getElementById('iconTextApplications').winControl;
