@@ -3,15 +3,10 @@
 
     var app = WinJS.Application;
     var activation = Windows.ApplicationModel.Activation;
-
-    // List of Smodcast Episodes
     var episodesList;
     var episodesListView;
-    var currentlyPlaying = {};
     var currentItemIndex = 0;
-
-    // System Media Controls
-    var supportedAudioFormats = [".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".mp4", ".asf", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3",];
+    //var supportedAudioFormats = [".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".mp4", ".asf", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3",];
     var systemMediaControls;
     var player;
 
@@ -33,29 +28,19 @@
             args.setPromise(WinJS.UI.processAll()
                 .then(function completed() {
                     DataService.getEpisodes().done(function (episodes) {
+                        var episodeListItemTemplate = document.getElementById('iconTextApplicationsTemplate');
                         episodesList = new WinJS.Binding.List(episodes);
                         episodesListView = document.getElementById('iconTextApplications').winControl;
-                        var episodeListItemTemplate = document.getElementById('iconTextApplicationsTemplate');
                         episodesListView.itemTemplate = episodeListItemTemplate;
                         episodesListView.itemDataSource = episodesList.dataSource;
+
+                        player.src = episodesList.getItem(currentItemIndex).data.mediaUrl;
+                        episodesListView.selection.set(currentItemIndex);
+                        systemMediaControls.isEnabled = true;
+
                         episodesListView.oniteminvoked = function (e) {
                             e.detail.itemPromise.then(function (item) {
-                                // mp3 url is empty i.e. #139
-                                if (!item.data.mediaUrl) {
-                                    // Create the message dialog and set its content
-                                    var msg = new Windows.UI.Popups.MessageDialog("Unfortunately, this episode can not be streamed.");
-                                    msg.commands.append(new Windows.UI.Popups.UICommand("Close", closeCommandHandler));
-                                    msg.defaultCommandIndex = 0;
-                                    msg.cancelCommandIndex = 0;
-                                    msg.showAsync();
-
-                                    function closeCommandHandler() {
-
-                                    }
-
-                                    return;
-                                }
-                                systemMediaControls.isEnabled = true;
+                                currentItemIndex = item.index;
                                 setNewMediaItem(item.index);
                             });
                         };
@@ -69,7 +54,8 @@
                     player.addEventListener("pause", mediaPaused, false);
                     player.addEventListener("error", mediaError, false);
                 })
-            )}
+            );
+        }
     };
 
     app.oncheckpoint = function (args) {
@@ -108,27 +94,18 @@
     }
 
     function mediaEnded(e) {
-        // End of playlist reached.  Stopping media playback
         player.autoplay = false;
         stopMedia();
         episodesListView.selection.set(null);
-        /* 
-        TODO: Implement play next functionality
-        var media = document.getElementById("mediaAudio");
-        if (playingIndex === DataService.feed.episodes[playingIndex].length - 1) {
-            playingIndex = 0;
-        } else {
-            playingIndex++;
-        }
-        */
     }
 
     function mediaError(e) {
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.closed;
     }
 
-    // Invoked from this Page's "ready" method.  Retrieve and initialize the  
-    // SystemMediaTransportControls object. 
+    /**
+     * Retrieve and initialize the SystemMediaTransportControls object. 
+     */
     function setupSystemMediaTransportControls() {
         systemMediaControls = Windows.Media.SystemMediaTransportControls.getForCurrentView();
         systemMediaControls.isEnabled = false;
@@ -141,17 +118,34 @@
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.closed;
     }
 
+    /**
+     * Sets Player's source attribute with new URL
+     * 
+     * @param {Number} i Index of the episode to set as source
+     */
     function setNewMediaItem(i) {
-        currentItemIndex = i;
         var newEpisode = episodesList.dataSource.list.getItem(i);
-        var episodesListView = document.getElementById('iconTextApplications').winControl;
-        episodesListView.selection.set(i);
-        player.src = newEpisode.data.mediaUrl;
-        player.play();
+
+        // mp3 url is empty i.e. #139
+        if (!newEpisode.data.mediaUrl) {
+            var msg = new Windows.UI.Popups.MessageDialog("Unfortunately, this episode can not be streamed.");
+            msg.commands.append(new Windows.UI.Popups.UICommand("Close", function () {
+
+            }));
+            msg.defaultCommandIndex = 0;
+            msg.cancelCommandIndex = 0;
+            msg.showAsync();
+        } else {
+            episodesListView.selection.set(i);
+            player.src = newEpisode.data.mediaUrl;
+            player.play();
+        }
     }
 
     /**
-     * Handles System Media Control Button Events
+     * System Media Control Button Event Handler
+     * 
+     * @param {Object} eventIn Event object
      */
     function systemMediaControlsButtonPressed(eventIn) {
         var mediaButton = Windows.Media.SystemMediaTransportControlsButton;
@@ -165,15 +159,23 @@
                 break;
 
             case mediaButton.stop:
-                stopPlayer();
+                player.pause();
                 break;
 
             case mediaButton.next:
-                setNewMediaItem(currentItemIndex + 1);
+                currentItemIndex -= 1;
+                if (currentItemIndex < 0) {
+                    currentItemIndex = episodesList.length - 1;
+                }
+                setNewMediaItem(currentItemIndex);
                 break;
 
             case mediaButton.previous:
-                setNewMediaItem(currentItemIndex - 1);
+                currentItemIndex += 1;
+                if (currentItemIndex > episodesList.length - 1) {
+                    currentItemIndex = 0;
+                }
+                setNewMediaItem(currentItemIndex);
                 break;
         }
     }
@@ -181,7 +183,6 @@
     // 'Smodr' Public API
     WinJS.Namespace.define("Smodr", {
         episodesList: episodesList,
-        currentlyPlaying: currentlyPlaying,
         mediaPaused: mediaPaused,
         mediaPlaying: mediaPlaying,
         mediaEnded: mediaEnded,
