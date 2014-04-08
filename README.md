@@ -15,6 +15,8 @@ Screenshots
 Getting Started
 ---------------
 
+Upon opening Smodr, the application will fetch all of Smodcast's episodes and populate a list. Click any episode in the list to begin playing it's audio.
+
 Requirements
 ------------
 
@@ -23,7 +25,7 @@ Requirements
 Installation
 ------------
 
-Visit [Smodr @ Windows Store](http://apps.microsoft.com/windows/en-us/app/smodr/ba5f0a9b-a2e3-470d-97da-d441dbb1e01c) or search for `Smodr` in the Windows Store and press install.
+Visit [Smodr @ Windows Store](http://apps.microsoft.com/windows/en-us/app/smodr/ba5f0a9b-a2e3-470d-97da-d441dbb1e01c) or search for *Smodr* in the Windows Store and press install.
 
 License
 -------
