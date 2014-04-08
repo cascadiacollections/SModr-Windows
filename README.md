@@ -15,6 +15,7 @@ Features
 * Fetches up-to-date list of Smodcast episodes
 * Plays audio in foregrund & background
 * Responds to keyboard media shortcuts for controlling media playback
+* Dynamic background of Smodcast blurred and dimmed cover photo
 
 Upcoming Features
 -----------------
