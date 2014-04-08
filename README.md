@@ -23,7 +23,7 @@ Requirements
 Installation
 ------------
 
-* [Windows Store](http://apps.microsoft.com/windows/en-us/app/smodr/ba5f0a9b-a2e3-470d-97da-d441dbb1e01c)
+Visit [Smodr @ Windows Store](http://apps.microsoft.com/windows/en-us/app/smodr/ba5f0a9b-a2e3-470d-97da-d441dbb1e01c) or search for `Smodr` in the Windows Store and press install.
 
 License
 -------
