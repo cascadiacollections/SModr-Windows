@@ -1,13 +1,13 @@
 Smodr-Windows
 =============
 
-  Kevin Smith's Smodcast client for Windows 8 written in JavaScript
+  Kevin Smith's Smodcast client for Windows 8.1 written in HTML5, JavaScript, and CSS3.
 
 About
 -----
 
 This app is the result of learning Windows 8 Store app development. 
-The goal is to eventually create a Smodcast app that I enjoy to use as a Kevin Smith & Co. fan.
+The goal is to eventually create a Smodcast app that I enjoy to use as a Kevin Smith fan.
 
 Features
 --------
@@ -20,8 +20,8 @@ Features
 Development, Feature Request, Bug Report
 -----------------
 
-For development status please visit [Smodr's Trello board](https://trello.com/b/DgbVEwlE/smodr).
-For feature requests and bug reports please use [Github Issues](https://github.com/KevinTCoughlin/Smodr-Windows/issues).
+* For development status please visit [Smodr's Trello board](https://trello.com/b/DgbVEwlE/smodr).
+* For feature requests and bug reports please use [Github Issues](https://github.com/KevinTCoughlin/Smodr-Windows/issues).
 
 Screenshots
 -----------
