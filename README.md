@@ -17,11 +17,11 @@ Features
 * Responds to keyboard media shortcuts for controlling media playback
 * Dynamic background of Smodcast blurred and dimmed cover photo
 
-Upcoming Features
+Development, Feature Request, Bug Report
 -----------------
 
-* Save your listening history for each episode
-* Mark episodes as listened to
+For development status please visit [Smodr's Trello board](https://trello.com/b/DgbVEwlE/smodr).
+For feature requests and bug reports please use [Github Issues](https://github.com/KevinTCoughlin/Smodr-Windows/issues).
 
 Screenshots
 -----------
