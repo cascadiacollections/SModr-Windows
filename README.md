@@ -28,11 +28,6 @@ Screenshots
 
 ![Smodr Background Playback - Windows 8.1](http://wscont2.apps.microsoft.com/winstore/1x/74fffcdd-0411-4a62-baeb-6586613ce35c/Screenshot.301331.1000003.jpg)
 
-Getting Started
-----
-
-Upon opening Smodr, the application will fetch all of Smodcast's episodes and populate a list. Click any episode in the list to begin playing it's audio.
-
 Requirements
 ----
 
