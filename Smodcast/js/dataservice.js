@@ -11,18 +11,20 @@
     };
 
     // Get Episodes from XML
-    var _getEpisodesFromXml = function (xml) {
+    var _getEpisodesFromXml = function(xml) {
         return new WinJS.Promise(function (comp, err, prog) {
             var episodes = xml.querySelectorAll("item");
             var _episodes = [];
 
             try {
-                // Process each blog post
+                // Parse attributes
                 for (var i = 0; i < episodes.length; i++) {
                     var episode = episodes[i];
 
-                    // Get the title, author, and date published
-                    var title = episode.querySelector("title").textContent;
+                    // Get episode title without 'Smodcast ###: ' prefix
+                    var fullTitle = episode.querySelector("title").textContent;
+                    var title = fullTitle.split(": ")[1];
+                    var episodeNumber = (episodes.length - 1) - i;
                     var description = episode.querySelector("description").textContent;
                     var mediaUrl = episode.querySelector("enclosure") ? episode.querySelector("enclosure").getAttribute("url") : null;
                     var published = episode.querySelector("pubDate").textContent;
@@ -42,12 +44,16 @@
                         group: feed,
                         key: feed.title,
                         title: title,
+                        number: episodeNumber,
                         description: description,
                         mediaUrl: mediaUrl,
                         published: published,
                         month: month,
                         day: day,
-                        year: year
+                        year: year,
+                        currentTime: 0.0,
+                        duration: 0.0,
+                        listens: 0
                     });
                 }
                 comp(_episodes);
@@ -80,8 +86,16 @@
         });
     };
 
+    /**
+     * Extract episode number from its title
+     */
+    function _getNumberFromString(title) {
+        return title.match(/\d+/)[0];
+    };
+
     WinJS.Namespace.define("DataService", {
         feed: feed,
         getEpisodes: getEpisodes
     });
+
 })();

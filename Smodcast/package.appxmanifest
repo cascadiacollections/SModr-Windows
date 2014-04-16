@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:build="http://schemas.microsoft.com/developer/appx/2012/build" IgnorableNamespaces="build">
-  <Identity Name="40739KevinCoughlin.Smodr" Version="1.1.0.11" Publisher="CN=AC6B41A6-C0F1-49DD-8E12-5A2001C77230" />
+  <Identity Name="40739KevinCoughlin.Smodr" Version="1.2.0.2" Publisher="CN=AC6B41A6-C0F1-49DD-8E12-5A2001C77230" />
   <Properties>
     <DisplayName>Smodr</DisplayName>
     <PublisherDisplayName>Kevin Coughlin</PublisherDisplayName>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" StartPage="default.html">
-      <m2:VisualElements DisplayName="Smodr" Description="Listen to Kevin Smith's SModcast Podcast with this Windows 8.1 Application." ForegroundText="dark" BackgroundColor="#FFFFFF" Square150x150Logo="images\Logo.png" Square30x30Logo="images\SmallLogo.png" ToastCapable="false">
+      <m2:VisualElements DisplayName="Smodr" Description="Listen to Kevin Smith's SModcast Podcast with this Windows 8.1 Application." ForegroundText="dark" BackgroundColor="#FFFFFF" Square150x150Logo="images\Logo.png" Square30x30Logo="images\SmallLogo.png" ToastCapable="true">
         <m2:DefaultTile ShortName="Smodr" Square70x70Logo="images\Square70x70Logo.png" DefaultSize="square150x150Logo" Wide310x150Logo="images\Wide310x150Logo.png">
         </m2:DefaultTile>
         <m2:SplashScreen Image="images\splashscreen.png" BackgroundColor="#F5F5F5" />
@@ -37,6 +37,6 @@
     <Capability Name="internetClient" />
   </Capabilities>
   <build:Metadata>
-    <build:Item Name="Blend" Version="12.0.41002.1" />
+    <build:Item Name="Blend" Version="12.0.41212.0" />
   </build:Metadata>
 </Package>

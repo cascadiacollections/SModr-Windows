@@ -1,4 +1,7 @@
-﻿(function () {
+﻿/**
+ * Kevin Coughlin <kevintcoughlin@gmail.com>
+ */
+(function () {
     'use strict';
 
     var app = WinJS.Application;
@@ -6,48 +9,80 @@
     var episodesList;
     var episodesListView;
     var currentItemIndex = 0;
-    //var supportedAudioFormats = [".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".mp4", ".asf", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3",];
+    var supportedAudioFormats = [".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".mp4", ".asf", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3",];
     var systemMediaControls;
+    var systemMediaTransportControlsDisplayUpdater = Windows.Media.SystemMediaTransportControls.displayUpdater;
+    var notifications = Windows.UI.Notifications;
     var player;
+    var lastViewState;
+    var updateEpisodeIntervalId;
+
+    // TODO: fix with bind
+    var seekToTime = -1;
+    var nowPlayingEpisode;
 
     app.onactivated = function (args) {
         if (args.detail.kind === activation.ActivationKind.launch) {
             if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
-                // Application newly launched
+                // Newly launched
+                lastViewState = Windows.UI.ViewManagement.ApplicationView.value;
 
-                // Add privacy policy to settings charm
                 WinJS.Application.onsettings = function (e) {
                     e.detail.applicationcommands = { "help": { title: "Privacy Statement", href: "privacy-statement.html" } };
                     WinJS.UI.SettingsFlyout.populateSettings(e);
                 };
-
             } else {
                 // Application already activated
-
             }
+
             args.setPromise(WinJS.UI.processAll()
                 .then(function completed() {
+                    _setCoverPhoto();
+
                     DataService.getEpisodes().done(function (episodes) {
                         var episodeListItemTemplate = document.getElementById('iconTextApplicationsTemplate');
                         episodesList = new WinJS.Binding.List(episodes);
                         episodesListView = document.getElementById('iconTextApplications').winControl;
                         episodesListView.itemTemplate = episodeListItemTemplate;
                         episodesListView.itemDataSource = episodesList.dataSource;
-
-                        player.src = episodesList.getItem(currentItemIndex).data.mediaUrl;
-                        episodesListView.selection.set(currentItemIndex);
+                        _updateListLayout();
+                        window.addEventListener('resize', handleResize);
                         systemMediaControls.isEnabled = true;
-
                         episodesListView.oniteminvoked = function (e) {
                             e.detail.itemPromise.then(function (item) {
                                 currentItemIndex = item.index;
                                 setNewMediaItem(item.index);
                             });
                         };
+
+                        /*
+                        database.clear().then(function (info) {
+                            console.log(info);
+                        }).catch(function (err) {
+                            console.log('error deleting db');
+                        });
+                        */
+
+                        // DB stuff
+                        database.all().then(function (docs) {
+                            if (docs.rows.length > 0) {
+                                docs.rows.forEach(function (doc) {
+                                    var tmpEpisode = episodesList.getItemFromKey(doc.key);
+                                    // TODO: handle this better
+                                    tmpEpisode.data._id = doc.doc._id;
+                                    tmpEpisode.data._rev = doc.doc._rev;
+                                    tmpEpisode.data.currentTime = doc.doc.currentTime;
+                                    tmpEpisode.data.duration = doc.doc.duration;
+                                    episodesList.setAt(tmpEpisode.data.number, tmpEpisode); // TODO: fix index retrieval
+                                });
+                                WinJS.UI.process(episodesListView);
+                            }
+                        }).catch(function (err) {
+                            console.log('database.all() error');
+                        });
                     });
 
                     setupSystemMediaTransportControls();
-
                     player = document.getElementById("player");
                     player.addEventListener("ended", mediaEnded, false);
                     player.addEventListener("playing", mediaPlaying, false);
@@ -63,6 +98,29 @@
     };
 
     app.start();
+
+    // Fired on resize events
+    function handleResize(event) {
+        _updateListLayout();
+    }
+
+    // Update List layout if necessary
+    function _updateListLayout() {
+        var viewState = Windows.UI.ViewManagement.ApplicationView;
+
+        // Use ListLayout if in portrait
+        if (viewState.getForCurrentView().orientation) {
+            if (episodesListView.layout.orientation == "horizontal") {
+                episodesListView.layout = new WinJS.UI.ListLayout();
+            }
+        }
+        // Use GridLayout if landscape
+        else {
+            if (episodesListView.layout.orientation == "vertical") {
+                episodesListView.layout = new WinJS.UI.GridLayout();
+            }
+        }
+    }
 
     // Plays the audio.
     function playMedia() {
@@ -85,22 +143,63 @@
         player.autoplay = false;
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.paused;
         pauseMedia();
+        stopUpdatingEpisode();
     }
 
+    // Media is currently playing
     function mediaPlaying(e) {
         player.autoplay = true;
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.playing;
         playMedia();
+        if (!updateEpisodeIntervalId) {
+            updateEpisodeIntervalId = setUpdateInterval();
+        }
     }
 
+    // Media has ended
     function mediaEnded(e) {
         player.autoplay = false;
         stopMedia();
+        systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.stopped;
         episodesListView.selection.set(null);
+        stopUpdatingEpisode();
     }
 
+    // Error with media playback
     function mediaError(e) {
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.closed;
+    }
+
+    // Set interval function to update currently playing episode metadata
+    function setUpdateInterval() {
+        var updateInterval = 5000;
+
+        function updateEpisode() {
+            nowPlayingEpisode.data.currentTime = player.currentTime;
+
+            // TODO: move out of here?
+            if (!nowPlayingEpisode.data.duration) {
+                nowPlayingEpisode.data.duration = player.duration;
+            }
+
+            // If first time inserting, set _id
+            if (!nowPlayingEpisode.data._id) nowPlayingEpisode.data._id = nowPlayingEpisode.key;
+
+            database.insert(nowPlayingEpisode.data).then(function (resp) {
+                nowPlayingEpisode.data._id = resp.id;
+                nowPlayingEpisode.data._rev = resp.rev;
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+
+        return setInterval(updateEpisode, updateInterval);
+    }
+
+    // Stop interval function that updates currently playing episode metadata
+    function stopUpdatingEpisode() {
+        clearInterval(updateEpisodeIntervalId);
+        updateEpisodeIntervalId = null;
     }
 
     /**
@@ -125,12 +224,13 @@
      */
     function setNewMediaItem(i) {
         var newEpisode = episodesList.dataSource.list.getItem(i);
+        nowPlayingEpisode = newEpisode; //TODO: fix
 
-        // mp3 url is empty i.e. #139
+        // mp3 url is empty i.e. SModcast #139
         if (!newEpisode.data.mediaUrl) {
             var msg = new Windows.UI.Popups.MessageDialog("Unfortunately, this episode can not be streamed.");
             msg.commands.append(new Windows.UI.Popups.UICommand("Close", function () {
-
+                console.log("Can't stream dialog closed.");
             }));
             msg.defaultCommandIndex = 0;
             msg.cancelCommandIndex = 0;
@@ -139,8 +239,44 @@
             episodesListView.selection.set(i);
             player.src = newEpisode.data.mediaUrl;
             player.play();
+
+            // TODO: Fix this hack with .bind
+            if (newEpisode.data.currentTime) {
+                seekToTime = newEpisode.data.currentTime;
+            } else {
+                seekToTime = -1;
+            }
+
+            // TODO: Fix this hack with .bind
+            player.oncanplay = function () {
+                if (seekToTime > -1) {
+                    player.currentTime = seekToTime;
+                }
+            };
+
+            updateSystemMediaDisplay(newEpisode);
         }
     }
+
+    /**
+     * Set & Update SystemMediaControls Display
+     */
+    function updateSystemMediaDisplay(episode) {
+        var updater = systemMediaControls.displayUpdater;
+        updater.type = Windows.Media.MediaPlaybackType.music;
+        try {
+            if (updater !== undefined) {
+                updater.musicProperties.artist = "Kevin Smith & Scott Mosier";
+                updater.musicProperties.albumArtist = "SModcast";
+                updater.musicProperties.title = episode.data.title;
+                updater.thumbnail = Windows.Storage.Streams.RandomAccessStreamReference.createFromUri(new Windows.Foundation.Uri('http://smodcast.com/wp-content/blogs.dir/1/files_mf/smodcast1400.jpg'));
+                updater.update();
+            }
+        }
+        catch(e) {
+            console.log(e);
+        }
+    };
 
     /**
      * System Media Control Button Event Handler
@@ -153,15 +289,12 @@
             case mediaButton.play:
                 player.play();
                 break;
-
             case mediaButton.pause:
                 player.pause();
                 break;
-
             case mediaButton.stop:
                 player.pause();
                 break;
-
             case mediaButton.next:
                 currentItemIndex -= 1;
                 if (currentItemIndex < 0) {
@@ -169,7 +302,6 @@
                 }
                 setNewMediaItem(currentItemIndex);
                 break;
-
             case mediaButton.previous:
                 currentItemIndex += 1;
                 if (currentItemIndex > episodesList.length - 1) {
@@ -179,6 +311,26 @@
                 break;
         }
     }
+
+    /**
+     * Blur & set cover photo image
+     * TODO: Might be able to do SVG overlay to overcome IE limitation
+     * http://blogs.msdn.com/b/ie/archive/2011/10/14/svg-filter-effects-in-ie10.aspx
+     */
+    function _setCoverPhoto() {
+        var coverPhoto = new Image();
+        coverPhoto.onload = function () {
+            var container = document.getElementById('cover-photo');
+            var options = {
+                amount: 2.5
+            };
+            Pixastic.process(coverPhoto, "blurfast", options);
+            container.style.background = "url(" + options.resultCanvas.toDataURL("image/png") + ") no-repeat";
+            container.style.backgroundSize = "cover";
+        };
+        coverPhoto.src = 'http://i1.sndcdn.com/artworks-000048733684-usfcdr-original.jpg?435a760';
+        coverPhoto.alt = 'SModcast Blurred Cover Photo';
+    };
 
     // 'Smodr' Public API
     WinJS.Namespace.define("Smodr", {
