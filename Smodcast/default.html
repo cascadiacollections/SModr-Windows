@@ -16,6 +16,8 @@
 
     <!-- Smodcast references -->
     <link href="css/default.css" rel="stylesheet" />
+    <link href="css/progrecss.css" rel="stylesheet" />
+
     <script src="js/converters.js"></script>
     <script src="js/db.js"></script>
     <script src="js/dataservice.js"></script>
@@ -37,7 +39,7 @@
     </div>
     -->
     <!-- Item template -->
-    <div id="iconTextApplicationsTemplate" data-win-control="WinJS.Binding.Template">
+    <div id="iconTextApplicationsTemplate" data-win-control="WinJS.Binding.Template" >
         <div class="iconTextApplications">
             <h2 class="episodeNumber" data-win-bind="innerText: number"></h2>
             <div class="episodeInfo">
@@ -61,16 +63,24 @@
          data-win-options="{ applicationId: 'f32a735b-bd13-40ee-9787-49ead10dab01', adUnitId: '10728016' }">
     </div>
     -->
+    <div class="nowPlayingTransportControlsContainer">
+        <button>Play</button>
+
+        <div data-win-control="WinJS.UI.Flyout">
+            <input type="range" class="win-vertical" name="volume" min="1" max="100" />
+        </div>
+    </div>
+
     <!-- Media Controls -->
-    <div id="mediaControls">
+    <div id="mediaControls" style="display: none;">
         <audio id="player"
-               msaudiocategory="BackgroundCapableMedia"
-               controls="controls"
-               preload="auto"
-               src=""
-               onpause="Smodr.mediaPaused(event)"
-               onplaying="Smodr.mediaPlaying(event)"
-               onended="Smodr.mediaEnded(event)"></audio>
+                msaudiocategory="BackgroundCapableMedia"
+                controls="controls"
+                preload="auto"
+                src=""
+                onpause="Smodr.mediaPaused(event)"
+                onplaying="Smodr.mediaPlaying(event)"
+                onended="Smodr.mediaEnded(event)"></audio>
     </div>
 </body>
 </html>

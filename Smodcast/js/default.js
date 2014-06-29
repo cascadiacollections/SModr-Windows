@@ -50,6 +50,7 @@
                         systemMediaControls.isEnabled = true;
                         episodesListView.oniteminvoked = function (e) {
                             e.detail.itemPromise.then(function (item) {
+                                document.getElementById('mediaControls').style.display = "block"; // TODO: improve - this sucks & is temporary.
                                 currentItemIndex = item.index;
                                 setNewMediaItem(item.index);
                             });

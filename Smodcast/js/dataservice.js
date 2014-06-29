@@ -7,7 +7,8 @@
 
     var SMODCAST_URL = "http://smodcast.com/channels/smodcast/feed/";
     var options = {
-        url : SMODCAST_URL
+        url: SMODCAST_URL,
+        responseType: 'document'
     };
 
     // Get Episodes from XML
@@ -25,7 +26,9 @@
                     var fullTitle = episode.querySelector("title").textContent;
                     var title = fullTitle.split(": ")[1];
                     var episodeNumber = (episodes.length - 1) - i;
-                    var description = episode.querySelector("description").textContent;
+
+                    var descriptionNode = episode.querySelector("description").innerHTML;
+                    var description = descriptionNode.replace("<!--[CDATA[", "").replace("]]-->", ""); // NOTE: Sigh.. libsyn changed its RSS feed format.
                     var mediaUrl = episode.querySelector("enclosure") ? episode.querySelector("enclosure").getAttribute("url") : null;
                     var published = episode.querySelector("pubDate").textContent;
 
@@ -68,8 +71,8 @@
         return new WinJS.Promise(function (comp, err, prog) {
             WinJS.xhr(options).done(function (request) {
                 if (request.status === 200) {
-                    var xmlDocument = request.responseXML;
-                    feed.title = xmlDocument.querySelector("rss > channel > title").textContent;
+                    var xml = request.response;
+                    feed.title = xml.querySelector("rss > channel > title").textContent;
 
                     // Use the date of the latest post as the last updated date
                     //var published = xmlDocument.querySelector("feed > entry > published").textContent;
@@ -78,7 +81,7 @@
                     //var dateFmt = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("month.abbreviated day year.full");
                     //var blogDate = dateFmt.format(date);
                     //feed.updated = "Last updated " + blogDate;
-                    _getEpisodesFromXml(xmlDocument).done(function (episodes) {
+                    _getEpisodesFromXml(xml).done(function (episodes) {
                         comp(episodes)
                     });
                 }

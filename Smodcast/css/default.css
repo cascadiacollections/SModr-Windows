@@ -37,11 +37,28 @@
     bottom: 4px;
 }
 
+/* Now Playing Controller Container */
+.nowPlayingTransportControlsContainer {
+    width: 100%;
+    height: auto;
+  )
+}
 /* ListView */
 #iconTextApplications {
     top: 125px;
     width: 100%;
-    height: 79.5%; /* Fix this measurement */
+    height: 79.5%;   background: black;
+    position: absolute;
+    bottom: 0;
+    padding: 20px;
+}
+
+.playButton {
+         width:40px; 
+      height:40px; 
+    background: url(images/media/play.png) no-repeat;
+    cursor: pointer;
+    border: none;
 }
 
     #iconTextApplications .win-selected h4, #iconTextApplications .win-selected h6 {
