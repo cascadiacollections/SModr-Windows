@@ -1,84 +1,167 @@
 ﻿html, body {
-    background: #FFFFFF;
-}
-
-/*App Header Styles*/ 
-#appHeader { 
-    position: absolute; 
-    z-index: 1; 
-    top: 45px; 
-    left: 50px; 
-} 
- 
-    #appHeader .win-navigation-backbutton { 
-        margin-right: 20px; 
-    } 
- 
-    #appHeader h1 { 
-        display: inline; 
-    }
- 
-/* Episode ListView Dimensions */
-#iconTextApplications {
-	top: 125px;
     width: 100%;
-	height: 79.5%; /* Fix this measurement */
+    height: 100%;
+    background-color: black;
 }
 
-/* style the background color of the filled-selection style items */
-.win-selectionstylefilled :not(.win-footprint).win-container {
-    background-color: transparent;
+/* Channel background photo */
+#cover-photo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
 }
 
-.win-selectionstylefilled .win-container.win-swipe:hover {
-    background-color: transparent;
+/* Header */
+#appHeader {
+    position: absolute;
+    top: 45px;
+    left: 50px;
+    z-index: 1;
+    color: white;
 }
 
-/* Starting Margin */
-#iconTextApplications .win-horizontal.win-viewport .win-surface {
-    margin: 0px 50px;
-}
-
-/* Episode Container Margin */
-#iconTextApplications .win-container {
-    margin: 5px 10px;
-}
-
-    /* Hide Hover Outline for Edge-to-Edge Items */
-    #iconTextApplications .win-container:hover {
-        outline: none;
-        color: #fff;
-        background-color: #643EBF;
+    #appHeader .win-navigation-backbutton {
+        margin-right: 20px;
     }
 
-/* Episode Container */
+    #appHeader h1 {
+        display: inline;
+    }
+
+/* Media Controls */
+#mediaControls {
+    position: absolute;
+    bottom: 4px;
+}
+
+/* Now Playing Controller Container */
+.nowPlayingTransportControlsContainer {
+    width: 100%;
+    height: auto;
+  )
+}
+/* ListView */
+#iconTextApplications {
+    top: 125px;
+    width: 100%;
+    height: 79.5%;   background: black;
+    position: absolute;
+    bottom: 0;
+    padding: 20px;
+}
+
+.playButton {
+         width:40px; 
+      height:40px; 
+    background: url(images/media/play.png) no-repeat;
+    cursor: pointer;
+    border: none;
+}
+
+    #iconTextApplications .win-selected h4, #iconTextApplications .win-selected h6 {
+        color: #fff;
+    }
+
+    #iconTextApplications .win-selectionbackground {
+        background-color: #FF6600;
+    }
+
+    /* Style the focus visual for edge-to-edge items */
+    #iconTextApplications .win-focusedoutline {
+        top: 2px;
+        left: 2px;
+        z-index: 5;
+        width: calc(100% - 4px);
+        height: calc(100% - 4px);
+    }
+
+/* Episode container */
 .iconTextApplications {
-    width: 210px;
+    display: -ms-flexbox;
+    padding: 2px 10px;
+    width: 420px;
     height: 100px;
-    padding: 5px;
 }
 
-/* style the focus visual for edge-to-edge items */
-#iconTextApplications .win-focusedoutline {
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    left: 2px;
-    top: 2px;
-    z-index: 5;
+    .iconTextApplications > .episodeNumber {
+        -ms-flex: 1 10%;
+        flex: 1 10%;
+        padding-top: 4px;
+        color: #FF6600;
+        white-space: nowrap;
+    }
+
+    .iconTextApplications > .episodeInfo {
+        -ms-flex: 2 90%;
+        flex: 2 90%;
+        display: -ms-flexbox;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        padding-left: 10px;
+    }
+
+        .iconTextApplications > .episodeInfo > .episodeTitle {
+            -ms-flex: 1 40%;
+            flex: 1 40%;
+        }
+
+        .iconTextApplications > .episodeInfo > .episodeDescription {
+            -ms-flex: 2 60%;
+            flex: 2 60%;
+        }
+
+.finished {
+    background-color: #aaa;
 }
 
-.topRight {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-	width: 392px;
-	height: 109px;
-	white-space: nowrap;
-	overflow: hidden;
+/* Minimum width */
+@media (max-width: 500px) {
+    #iconTextApplications .win-container {
+        margin: 0;
+    }
+
+    #iconTextApplications .win-container:nth-child(even) {
+        background: white;
+    }
+
+    #iconTextApplications .win-container:nth-child(odd) {
+        background: #F3F3F3;
+    }
+
+    #iconTextApplications .win-container .win-itembox {
+        background: none;
+    }
 }
 
-.bottomLeft {
-    position: absolute;
-    bottom: 0px;
-    left: 50px; 
+/* Between minimum and full width */
+@media (min-width: 501px) and (max-width: 1023px) {
+    #iconTextApplications .win-container {
+        margin: 0;
+    }
+
+    #iconTextApplications .win-container:nth-child(even) {
+        background: white;
+    }
+
+    #iconTextApplications .win-container:nth-child(odd) {
+        background: #F3F3F3;
+    }
+
+    #iconTextApplications .win-container .win-itembox {
+        background: none;
+    }
+}
+
+/* Maximum width */
+@media (min-width: 1024px) {
+    #iconTextApplications .win-container:hover {
+        color: white;
+    }
+
+    #iconTextApplications .win-container {
+        margin: 8px 8px;
+    }
 }

@@ -1,148 +1,345 @@
-﻿(function () {"use strict";
+﻿/**
+ * Kevin Coughlin <kevintcoughlin@gmail.com>
+ */
+(function () {
+    'use strict';
 
     var app = WinJS.Application;
     var activation = Windows.ApplicationModel.Activation;
+    var episodesList;
+    var episodesListView;
+    var currentItemIndex = 0;
+    var supportedAudioFormats = [".3g2", ".3gp2", ".3gp", ".3gpp", ".m4a", ".mp4", ".asf", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3",];
+    var systemMediaControls;
+    var systemMediaTransportControlsDisplayUpdater = Windows.Media.SystemMediaTransportControls.displayUpdater;
+    var notifications = Windows.UI.Notifications;
+    var player;
+    var lastViewState;
+    var updateEpisodeIntervalId;
 
-    // List of Smodcast Episodes
-    var episodesList = new WinJS.Binding.List();
-    var currentlyPlaying = {};
-    var playingIndex = 0;
+    // TODO: fix with bind
+    var seekToTime = -1;
+    var nowPlayingEpisode;
 
     app.onactivated = function (args) {
         if (args.detail.kind === activation.ActivationKind.launch) {
             if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
                 // Newly launched
+                lastViewState = Windows.UI.ViewManagement.ApplicationView.value;
 
-                // Add privacy policy to settings charm
                 WinJS.Application.onsettings = function (e) {
                     e.detail.applicationcommands = { "help": { title: "Privacy Statement", href: "privacy-statement.html" } };
                     WinJS.UI.SettingsFlyout.populateSettings(e);
                 };
-
             } else {
-                // Activated
-
+                // Application already activated
             }
+
             args.setPromise(WinJS.UI.processAll()
                 .then(function completed() {
-                    var episodesListView = document.getElementById('iconTextApplications').winControl,
-                        episodeListItemTemplate = document.getElementById('iconTextApplicationsTemplate');
+                    _setCoverPhoto();
 
-                    episodesListView.itemTemplate = episodeListItemTemplate;
-                    episodesListView.itemDataSource = episodesList.dataSource;
-                    episodesListView.oniteminvoked = function (e) {
-                        e.detail.itemPromise.then(function (item) {
+                    DataService.getEpisodes().done(function (episodes) {
+                        var episodeListItemTemplate = document.getElementById('iconTextApplicationsTemplate');
+                        episodesList = new WinJS.Binding.List(episodes);
+                        episodesListView = document.getElementById('iconTextApplications').winControl;
+                        episodesListView.itemTemplate = episodeListItemTemplate;
+                        episodesListView.itemDataSource = episodesList.dataSource;
+                        _updateListLayout();
+                        window.addEventListener('resize', handleResize);
+                        systemMediaControls.isEnabled = true;
+                        episodesListView.oniteminvoked = function (e) {
+                            e.detail.itemPromise.then(function (item) {
+                                document.getElementById('mediaControls').style.display = "block"; // TODO: improve - this sucks & is temporary.
+                                currentItemIndex = item.index;
+                                setNewMediaItem(item.index);
+                            });
+                        };
 
-                            // mp3 url is empty i.e. #139
-                            if (!item.data.mediaUrl) {
-                                // Create the message dialog and set its content
-                                var msg = new Windows.UI.Popups.MessageDialog("Unfortunately, this episode can not be streamed.");
-                                msg.commands.append(new Windows.UI.Popups.UICommand("Close", commandInvokedHandler));
-                                msg.defaultCommandIndex = 0;
-                                msg.cancelCommandIndex = 0;
-                                msg.showAsync();
-
-                                function commandInvokedHandler() {
-
-                                }
-
-                                return;
-                            }
-
-                            playingIndex = item.index;
-                            currentlyPlaying = item;
-                            episodesListView.selection.set(item);
-
-                            /*
-                            var nowPlaying = document.getElementById('nowPlaying');
-                            nowPlaying.innerHTML = "<strong>Now Playing: </strong>" + item.data.title;
-                            */
-
-                            var media = document.getElementById("mediaAudio");
-                            media.src = item.data.mediaUrl;
-                            media.play();
+                        /*
+                        database.clear().then(function (info) {
+                            console.log(info);
+                        }).catch(function (err) {
+                            console.log('error deleting db');
                         });
-                    };
+                        */
 
-                    // Event handler for SystemMediaTransportControls' buttonpressed event
-                    function systemMediaControlsButtonPressed(eventIn) {
-                        var mediaButton = Windows.Media.SystemMediaTransportControlsButton;
-                        switch (eventIn.button) {
-                            case mediaButton.play:
-                                playMedia();
-                                break;
-                            case mediaButton.pause:
-                                pauseMedia();
-                                break;
-                            case mediaButton.stop:
-                                stopMedia();
-                                break;
-                        }
-                    }
+                        // DB stuff
+                        database.all().then(function (docs) {
+                            if (docs.rows.length > 0) {
+                                docs.rows.forEach(function (doc) {
+                                    var tmpEpisode = episodesList.getItemFromKey(doc.key);
+                                    // TODO: handle this better
+                                    tmpEpisode.data._id = doc.doc._id;
+                                    tmpEpisode.data._rev = doc.doc._rev;
+                                    tmpEpisode.data.currentTime = doc.doc.currentTime;
+                                    tmpEpisode.data.duration = doc.doc.duration;
+                                    episodesList.setAt(tmpEpisode.data.number, tmpEpisode); // TODO: fix index retrieval
+                                });
+                                WinJS.UI.process(episodesListView);
+                            }
+                        }).catch(function (err) {
+                            console.log('database.all() error');
+                        });
+                    });
+
+                    setupSystemMediaTransportControls();
+                    player = document.getElementById("player");
+                    player.addEventListener("ended", mediaEnded, false);
+                    player.addEventListener("playing", mediaPlaying, false);
+                    player.addEventListener("pause", mediaPaused, false);
+                    player.addEventListener("error", mediaError, false);
                 })
-            )}
+            );
+        }
     };
 
     app.oncheckpoint = function (args) {
-        // TODO: This application is about to be suspended. Save any state
-        // that needs to persist across suspensions here. You might use the
-        // WinJS.Application.sessionState object, which is automatically
-        // saved and restored across suspension. If you need to complete an
-        // asynchronous operation before your application is suspended, call
-        // args.setPromise().
+        // Application suspended
     };
 
     app.start();
 
+    // Fired on resize events
+    function handleResize(event) {
+        _updateListLayout();
+    }
+
+    // Update List layout if necessary
+    function _updateListLayout() {
+        var viewState = Windows.UI.ViewManagement.ApplicationView;
+
+        // Use ListLayout if in portrait
+        if (viewState.getForCurrentView().orientation) {
+            if (episodesListView.layout.orientation == "horizontal") {
+                episodesListView.layout = new WinJS.UI.ListLayout();
+            }
+        }
+        // Use GridLayout if landscape
+        else {
+            if (episodesListView.layout.orientation == "vertical") {
+                episodesListView.layout = new WinJS.UI.GridLayout();
+            }
+        }
+    }
+
     // Plays the audio.
     function playMedia() {
-        var media = document.getElementById("mediaAudio");
-        media.play();
+        player.play();
     }
 
     // Pauses the audio.
     function pauseMedia() {
-        var media = document.getElementById("mediaAudio");
-        media.pause();
+        player.pause();
     }
 
     // Stops the audio.
     function stopMedia() {
-        var media = document.getElementById("mediaAudio");
-        media.pause();
-        media.currentTime = 0;
+        player.pause();
+        player.currentTime = 0;
     }
 
     // Event handlers for <audio>
     function mediaPaused(e) {
+        player.autoplay = false;
+        systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.paused;
         pauseMedia();
+        stopUpdatingEpisode();
     }
 
+    // Media is currently playing
     function mediaPlaying(e) {
+        player.autoplay = true;
+        systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.playing;
         playMedia();
-    }
-
-    function mediaEnded(e) {
-        /* 
-        TODO: Implement play next functionality
-        var media = document.getElementById("mediaAudio");
-        if (playingIndex === DataService.feed.episodes[playingIndex].length - 1) {
-            playingIndex = 0;
-        } else {
-            playingIndex++;
+        if (!updateEpisodeIntervalId) {
+            updateEpisodeIntervalId = setUpdateInterval();
         }
-        */
-        var episodesListView = document.getElementById('iconTextApplications').winControl;
-        episodesListView.selection.set(null);
     }
 
-    // Public Members
+    // Media has ended
+    function mediaEnded(e) {
+        player.autoplay = false;
+        stopMedia();
+        systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.stopped;
+        episodesListView.selection.set(null);
+        stopUpdatingEpisode();
+    }
+
+    // Error with media playback
+    function mediaError(e) {
+        systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.closed;
+    }
+
+    // Set interval function to update currently playing episode metadata
+    function setUpdateInterval() {
+        var updateInterval = 5000;
+
+        function updateEpisode() {
+            nowPlayingEpisode.data.currentTime = player.currentTime;
+
+            // TODO: move out of here?
+            if (!nowPlayingEpisode.data.duration) {
+                nowPlayingEpisode.data.duration = player.duration;
+            }
+
+            // If first time inserting, set _id
+            if (!nowPlayingEpisode.data._id) nowPlayingEpisode.data._id = nowPlayingEpisode.key;
+
+            database.insert(nowPlayingEpisode.data).then(function (resp) {
+                nowPlayingEpisode.data._id = resp.id;
+                nowPlayingEpisode.data._rev = resp.rev;
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+
+        return setInterval(updateEpisode, updateInterval);
+    }
+
+    // Stop interval function that updates currently playing episode metadata
+    function stopUpdatingEpisode() {
+        clearInterval(updateEpisodeIntervalId);
+        updateEpisodeIntervalId = null;
+    }
+
+    /**
+     * Retrieve and initialize the SystemMediaTransportControls object. 
+     */
+    function setupSystemMediaTransportControls() {
+        systemMediaControls = Windows.Media.SystemMediaTransportControls.getForCurrentView();
+        systemMediaControls.isEnabled = false;
+        systemMediaControls.addEventListener("buttonpressed", systemMediaControlsButtonPressed, false);
+        systemMediaControls.isPlayEnabled = true;
+        systemMediaControls.isPauseEnabled = true;
+        systemMediaControls.isStopEnabled = true;
+        systemMediaControls.isNextEnabled = true;
+        systemMediaControls.isPreviousEnabled = true;
+        systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.closed;
+    }
+
+    /**
+     * Sets Player's source attribute with new URL
+     * 
+     * @param {Number} i Index of the episode to set as source
+     */
+    function setNewMediaItem(i) {
+        var newEpisode = episodesList.dataSource.list.getItem(i);
+        nowPlayingEpisode = newEpisode; //TODO: fix
+
+        // mp3 url is empty i.e. SModcast #139
+        if (!newEpisode.data.mediaUrl) {
+            var msg = new Windows.UI.Popups.MessageDialog("Unfortunately, this episode can not be streamed.");
+            msg.commands.append(new Windows.UI.Popups.UICommand("Close", function () {
+                console.log("Can't stream dialog closed.");
+            }));
+            msg.defaultCommandIndex = 0;
+            msg.cancelCommandIndex = 0;
+            msg.showAsync();
+        } else {
+            episodesListView.selection.set(i);
+            player.src = newEpisode.data.mediaUrl;
+            player.play();
+
+            // TODO: Fix this hack with .bind
+            if (newEpisode.data.currentTime) {
+                seekToTime = newEpisode.data.currentTime;
+            } else {
+                seekToTime = -1;
+            }
+
+            // TODO: Fix this hack with .bind
+            player.oncanplay = function () {
+                if (seekToTime > -1) {
+                    player.currentTime = seekToTime;
+                }
+            };
+
+            updateSystemMediaDisplay(newEpisode);
+        }
+    }
+
+    /**
+     * Set & Update SystemMediaControls Display
+     */
+    function updateSystemMediaDisplay(episode) {
+        var updater = systemMediaControls.displayUpdater;
+        updater.type = Windows.Media.MediaPlaybackType.music;
+        try {
+            if (updater !== undefined) {
+                updater.musicProperties.artist = "Kevin Smith & Scott Mosier";
+                updater.musicProperties.albumArtist = "SModcast";
+                updater.musicProperties.title = episode.data.title;
+                updater.thumbnail = Windows.Storage.Streams.RandomAccessStreamReference.createFromUri(new Windows.Foundation.Uri('http://smodcast.com/wp-content/blogs.dir/1/files_mf/smodcast1400.jpg'));
+                updater.update();
+            }
+        }
+        catch(e) {
+            console.log(e);
+        }
+    };
+
+    /**
+     * System Media Control Button Event Handler
+     * 
+     * @param {Object} eventIn Event object
+     */
+    function systemMediaControlsButtonPressed(eventIn) {
+        var mediaButton = Windows.Media.SystemMediaTransportControlsButton;
+        switch (eventIn.button) {
+            case mediaButton.play:
+                player.play();
+                break;
+            case mediaButton.pause:
+                player.pause();
+                break;
+            case mediaButton.stop:
+                player.pause();
+                break;
+            case mediaButton.next:
+                currentItemIndex -= 1;
+                if (currentItemIndex < 0) {
+                    currentItemIndex = episodesList.length - 1;
+                }
+                setNewMediaItem(currentItemIndex);
+                break;
+            case mediaButton.previous:
+                currentItemIndex += 1;
+                if (currentItemIndex > episodesList.length - 1) {
+                    currentItemIndex = 0;
+                }
+                setNewMediaItem(currentItemIndex);
+                break;
+        }
+    }
+
+    /**
+     * Blur & set cover photo image
+     * TODO: Might be able to do SVG overlay to overcome IE limitation
+     * http://blogs.msdn.com/b/ie/archive/2011/10/14/svg-filter-effects-in-ie10.aspx
+     */
+    function _setCoverPhoto() {
+        var coverPhoto = new Image();
+        coverPhoto.onload = function () {
+            var container = document.getElementById('cover-photo');
+            var options = {
+                amount: 2.5
+            };
+            Pixastic.process(coverPhoto, "blurfast", options);
+            container.style.background = "url(" + options.resultCanvas.toDataURL("image/png") + ") no-repeat";
+            container.style.backgroundSize = "cover";
+        };
+        coverPhoto.src = 'http://i1.sndcdn.com/artworks-000048733684-usfcdr-original.jpg?435a760';
+        coverPhoto.alt = 'SModcast Blurred Cover Photo';
+    };
+
+    // 'Smodr' Public API
     WinJS.Namespace.define("Smodr", {
         episodesList: episodesList,
-        currentlyPlaying: currentlyPlaying,
         mediaPaused: mediaPaused,
         mediaPlaying: mediaPlaying,
-        mediaEnded: mediaEnded
+        mediaEnded: mediaEnded,
+        mediaError: mediaError
     });
 
 })();
