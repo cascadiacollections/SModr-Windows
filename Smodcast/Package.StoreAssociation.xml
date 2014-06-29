@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <StoreAssociation xmlns="http://schemas.microsoft.com/appx/2010/storeassociation">
   <Publisher>CN=AC6B41A6-C0F1-49DD-8E12-5A2001C77230</Publisher>
-  <NamespacePrefix>40739KevinCoughlin</NamespacePrefix>
   <PublisherDisplayName>Kevin Coughlin</PublisherDisplayName>
   <GeneratePackageHash>http://www.w3.org/2001/04/xmlenc#sha256</GeneratePackageHash>
   <SupportedLocales>
@@ -360,17 +359,17 @@
       <PackageInfo>
         <OsMinVersion>6.3.0.0</OsMinVersion>
         <PackageArchitecture>Neutral</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.1.0.11</PackageMaxArchitectureVersion>
+        <PackageMaxArchitectureVersion>1.2.0.2</PackageMaxArchitectureVersion>
       </PackageInfo>
       <PackageInfo>
         <OsMinVersion>6.3.0.0</OsMinVersion>
         <PackageArchitecture>Neutral</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.1.0.11</PackageMaxArchitectureVersion>
+        <PackageMaxArchitectureVersion>1.2.0.2</PackageMaxArchitectureVersion>
       </PackageInfo>
       <PackageInfo>
         <OsMinVersion>6.3.0.0</OsMinVersion>
         <PackageArchitecture>Neutral</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.1.0.11</PackageMaxArchitectureVersion>
+        <PackageMaxArchitectureVersion>1.2.0.2</PackageMaxArchitectureVersion>
       </PackageInfo>
     </BundleInfo>
   </PackageInfoList>
