@@ -89,9 +89,19 @@
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
     <Content Include="js\lib\humanize-duration.js" />
+    <Content Include="js\lib\Interactivity.1.1.js" />
+    <Content Include="js\lib\jquery.media.js" />
     <Content Include="js\lib\pixastic.custom.js" />
     <Content Include="js\lib\pouchdb-2.1.0.min.js" />
+    <Content Include="packages.config" />
     <Content Include="privacy-statement.html" />
+    <Content Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.map" />
+    <Content Include="Scripts\underscore-min.js" />
+    <Content Include="Scripts\underscore-min.map" />
+    <Content Include="Scripts\underscore.js" />
     <None Include="Smodcast_StoreKey.pfx" />
     <None Include="Package.StoreAssociation.xml" />
     <None Include="Smodcast_TemporaryKey.pfx" />
@@ -99,6 +109,9 @@
   <ItemGroup>
     <SDKReference Include="Microsoft.WinJS.2.0, Version=1.0" />
     <SDKReference Include="MSAdvertisingJS, Version=8.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="js\lib\js\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment
