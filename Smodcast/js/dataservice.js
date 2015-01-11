@@ -50,9 +50,7 @@
                 if (request.status === 200) {
                     var xml = request.response;
                     feed.title = xml.querySelector('rss > channel > title').textContent;
-                    _getEpisodesFromXml(xml).done(function (episodes) {
-                        comp(episodes)
-                    });
+                    _getEpisodesFromXml(xml).done(comp);
                 }
             })
         });
