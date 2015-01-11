@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:build="http://schemas.microsoft.com/developer/appx/2012/build" IgnorableNamespaces="build">
-  <Identity Name="40739KevinCoughlin.Smodr" Version="1.3.0.1" Publisher="CN=AC6B41A6-C0F1-49DD-8E12-5A2001C77230" />
+  <Identity Name="40739KevinCoughlin.Smodr" Version="1.3.0.2" Publisher="CN=AC6B41A6-C0F1-49DD-8E12-5A2001C77230" />
   <Properties>
     <DisplayName>Smodr</DisplayName>
     <PublisherDisplayName>Kevin Coughlin</PublisherDisplayName>
