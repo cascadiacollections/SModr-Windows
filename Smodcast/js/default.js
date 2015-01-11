@@ -1,7 +1,7 @@
 ﻿/**
  * Kevin Coughlin <kevintcoughlin@gmail.com>
  */
-(function () {
+(function ($, _) {
     'use strict';
 
     var app = WinJS.Application;
@@ -13,9 +13,12 @@
     var systemMediaControls;
     var systemMediaTransportControlsDisplayUpdater = Windows.Media.SystemMediaTransportControls.displayUpdater;
     var notifications = Windows.UI.Notifications;
-    var player;
     var lastViewState;
     var updateEpisodeIntervalId;
+
+    // Selectors
+    var $player;
+    var $mediaControls;
 
     // TODO: fix with bind
     var seekToTime = -1;
@@ -37,20 +40,23 @@
 
             args.setPromise(WinJS.UI.processAll()
                 .then(function completed() {
+                    _cacheSelectors();
                     _setCoverPhoto();
 
                     DataService.getEpisodes().done(function (episodes) {
-                        var episodeListItemTemplate = document.getElementById('iconTextApplicationsTemplate');
+                        var episodeListItemTemplate = $('#iconTextApplicationsTemplate')[0];
                         episodesList = new WinJS.Binding.List(episodes);
-                        episodesListView = document.getElementById('iconTextApplications').winControl;
+                        episodesListView = $('#iconTextApplications')[0].winControl;
                         episodesListView.itemTemplate = episodeListItemTemplate;
                         episodesListView.itemDataSource = episodesList.dataSource;
+
                         _updateListLayout();
-                        window.addEventListener('resize', handleResize);
+                        $(window).resize(handleResize);
+
                         systemMediaControls.isEnabled = true;
                         episodesListView.oniteminvoked = function (e) {
                             e.detail.itemPromise.then(function (item) {
-                                document.getElementById('mediaControls').style.display = "block"; // TODO: improve - this sucks & is temporary.
+                                $mediaControls.show();
                                 currentItemIndex = item.index;
                                 setNewMediaItem(item.index);
                             });
@@ -84,11 +90,12 @@
                     });
 
                     setupSystemMediaTransportControls();
-                    player = document.getElementById("player");
-                    player.addEventListener("ended", mediaEnded, false);
-                    player.addEventListener("playing", mediaPlaying, false);
-                    player.addEventListener("pause", mediaPaused, false);
-                    player.addEventListener("error", mediaError, false);
+
+                    $player
+                        .on('ended', mediaEnded)
+                        .on('playing', mediaPlaying)
+                        .on('pause', mediaPaused)
+                        .on('error', mediaError);
                 })
             );
         }
@@ -99,6 +106,11 @@
     };
 
     app.start();
+
+    function _cacheSelectors() {
+        $player = $.media('#player');
+        $mediaControls = $('#mediaControls');
+    }
 
     // Fired on resize events
     function handleResize(event) {
@@ -111,37 +123,37 @@
 
         // Use ListLayout if in portrait
         if (viewState.getForCurrentView().orientation) {
-            if (episodesListView.layout.orientation == "horizontal") {
+            if (episodesListView.layout.orientation === "horizontal") {
                 episodesListView.layout = new WinJS.UI.ListLayout();
             }
         }
         // Use GridLayout if landscape
         else {
-            if (episodesListView.layout.orientation == "vertical") {
+            if (episodesListView.layout.orientation === "vertical") {
                 episodesListView.layout = new WinJS.UI.GridLayout();
             }
         }
     }
 
     // Plays the audio.
-    function playMedia() {
-        player.play();
+    function playMedia(e) {
+        $player.play();
     }
 
     // Pauses the audio.
-    function pauseMedia() {
-        player.pause();
+    function pauseMedia(e) {
+        $player.pause();
     }
 
     // Stops the audio.
-    function stopMedia() {
-        player.pause();
-        player.currentTime = 0;
+    function stopMedia(e) {
+        $player.pause();
+        $player.seek(0);
     }
 
     // Event handlers for <audio>
     function mediaPaused(e) {
-        player.autoplay = false;
+        $player.autoplay(false);
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.paused;
         pauseMedia();
         stopUpdatingEpisode();
@@ -149,7 +161,7 @@
 
     // Media is currently playing
     function mediaPlaying(e) {
-        player.autoplay = true;
+        $player.autoplay(true);
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.playing;
         playMedia();
         if (!updateEpisodeIntervalId) {
@@ -159,7 +171,7 @@
 
     // Media has ended
     function mediaEnded(e) {
-        player.autoplay = false;
+        $player.autoplay(false);
         stopMedia();
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.stopped;
         episodesListView.selection.set(null);
@@ -176,11 +188,11 @@
         var updateInterval = 5000;
 
         function updateEpisode() {
-            nowPlayingEpisode.data.currentTime = player.currentTime;
+            nowPlayingEpisode.data.currentTime = $player.time();
 
             // TODO: move out of here?
             if (!nowPlayingEpisode.data.duration) {
-                nowPlayingEpisode.data.duration = player.duration;
+                nowPlayingEpisode.data.duration = $player.duration();
             }
 
             // If first time inserting, set _id
@@ -238,22 +250,18 @@
             msg.showAsync();
         } else {
             episodesListView.selection.set(i);
-            player.src = newEpisode.data.mediaUrl;
-            player.play();
+            $player.source(newEpisode.data.mediaUrl);
+            $player.play();
 
-            // TODO: Fix this hack with .bind
             if (newEpisode.data.currentTime) {
                 seekToTime = newEpisode.data.currentTime;
             } else {
                 seekToTime = -1;
             }
 
-            // TODO: Fix this hack with .bind
-            player.oncanplay = function () {
-                if (seekToTime > -1) {
-                    player.currentTime = seekToTime;
-                }
-            };
+            $player.ready(function () {
+                if (seekToTime > -1) $player.time(seekToTime);
+            });
 
             updateSystemMediaDisplay(newEpisode);
         }
@@ -288,13 +296,13 @@
         var mediaButton = Windows.Media.SystemMediaTransportControlsButton;
         switch (eventIn.button) {
             case mediaButton.play:
-                player.play();
+                $player.play();
                 break;
             case mediaButton.pause:
-                player.pause();
+                $player.pause();
                 break;
             case mediaButton.stop:
-                player.pause();
+                $player.pause();
                 break;
             case mediaButton.next:
                 currentItemIndex -= 1;
@@ -333,7 +341,6 @@
         coverPhoto.alt = 'SModcast Blurred Cover Photo';
     };
 
-    // 'Smodr' Public API
     WinJS.Namespace.define("Smodr", {
         episodesList: episodesList,
         mediaPaused: mediaPaused,
@@ -342,4 +349,4 @@
         mediaError: mediaError
     });
 
-})();
+})(jQuery, _);

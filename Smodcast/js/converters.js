@@ -22,7 +22,7 @@
          * Convert # of listens to appropriate class
          */
         listensToClass: WinJS.Binding.converter(function (listens) {
-            return listens == 0 ? "finished" : "";
+            return listens === 0 ? "finished" : "";
         })
     });
 

@@ -1,4 +1,4 @@
-﻿(function () {
+﻿(function ($, _) {
     "use strict";
 
     var feed = {
@@ -14,34 +14,34 @@
     // Get Episodes from XML
     var _getEpisodesFromXml = function(xml) {
         return new WinJS.Promise(function (comp, err, prog) {
-            var episodes = xml.querySelectorAll("item");
+            var episodes = $(xml).find('item');
             var _episodes = [];
 
             try {
-                // Parse attributes
-                for (var i = 0; i < episodes.length; i++) {
-                    var episode = episodes[i];
-
+                _.each(episodes, function (episode, i) {
                     // Get episode title without 'Smodcast ###: ' prefix
-                    var fullTitle = episode.querySelector("title").textContent;
+                    var $episode = $(episode);
+
+                    var fullTitle = $episode.find('title').text();
                     var title = fullTitle.split(": ")[1];
                     var episodeNumber = (episodes.length - 1) - i;
 
-                    var descriptionNode = episode.querySelector("description").innerHTML;
+                    var descriptionNode = $episode.find('description').html();
                     var description = descriptionNode.replace("<!--[CDATA[", "").replace("]]-->", ""); // NOTE: Sigh.. libsyn changed its RSS feed format.
-                    var mediaUrl = episode.querySelector("enclosure") ? episode.querySelector("enclosure").getAttribute("url") : null;
-                    var published = episode.querySelector("pubDate").textContent;
+
+                    var mediaUrl = $episode.find('enclosure') ? $episode.find('enclosure').attr('url') : null;
+                    //var published = $episode.find('pubDate').text(); // @TODO: Returning all pubDates
 
                     // Convert the date for display
-                    var episodeDate = new Date(published);
+                    //var episodeDate = new Date(published);
 
-                    var monthFmt = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("month.abbreviated");
-                    var dayFmt = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("day");
-                    var yearFmt = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("year.full");
+                    //var monthFmt = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("month.abbreviated");
+                    //var dayFmt = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("day");
+                    //var yearFmt = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("year.full");
 
-                    var month = monthFmt.format(episodeDate);
-                    var day = dayFmt.format(episodeDate);
-                    var year = yearFmt.format(episodeDate);
+                    //var month = monthFmt.format(episodeDate);
+                    //var day = dayFmt.format(episodeDate);
+                    //var year = yearFmt.format(episodeDate);
 
                     _episodes.push({
                         group: feed,
@@ -50,15 +50,15 @@
                         number: episodeNumber,
                         description: description,
                         mediaUrl: mediaUrl,
-                        published: published,
-                        month: month,
-                        day: day,
-                        year: year,
+                        //published: published,
+                        //month: month,
+                        //day: day,
+                        //year: year,
                         currentTime: 0.0,
                         duration: 0.0,
                         listens: 0
                     });
-                }
+                }, this);
                 comp(_episodes);
             }
             catch (e) {
@@ -101,4 +101,4 @@
         getEpisodes: getEpisodes
     });
 
-})();
+})(jQuery, _);
