@@ -4,24 +4,19 @@
     <meta charset="utf-8" />
     <title>Smodcast</title>
 
-    <!-- WinJS references -->
     <link href="//Microsoft.WinJS.2.0/css/ui-light.css" rel="stylesheet" />
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
     <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
 
-    <!-- Vendor -->
-    <script src="Scripts/jquery-2.1.1.min.js"></script>
+    <script src="Scripts/jquery-2.1.3.js"></script>
+    <script src="Scripts/lodash.min.js"></script>
     <script src="js/lib/jquery.media.js"></script>
-    <script src="Scripts/underscore-min.js"></script>
     <script src="js/lib/pixastic.custom.js"></script>
     <script src="js/lib/pouchdb-2.1.0.min.js"></script>
     <script src="js/lib/humanize-duration.js"></script>
-    <script src="/MSAdvertisingJS/ads/ad.js"></script>
 
-    <!-- Smodcast references -->
     <link href="css/default.css" rel="stylesheet" />
     <link href="css/progrecss.css" rel="stylesheet" />
-
     <script src="js/converters.js"></script>
     <script src="js/db.js"></script>
     <script src="js/dataservice.js"></script>
@@ -30,18 +25,9 @@
 <body>
     <div id="cover-photo">
     </div>
-
-    <!-- App Header -->
     <div id="appHeader">
         <h1>SModcast</h1>
     </div>
-
-    <!--
-    <div class="topRight">
-        <p id="nowPlaying"></p>
-    </div>
-    -->
-    <!-- Item template -->
     <div id="iconTextApplicationsTemplate" data-win-control="WinJS.Binding.Template" >
         <div class="iconTextApplications">
             <h2 class="episodeNumber" data-win-bind="innerText: number"></h2>
@@ -52,40 +38,13 @@
             </div>
         </div>
     </div>
-
-    <!-- ListView -->
     <div id="iconTextApplications"
          class="win-selectionstylefilled"
          data-win-control="WinJS.UI.ListView"
          data-win-options="{ layout: { type: WinJS.UI.GridLayout }, selectionMode: 'none'}"
          style="background: none;">
     </div>
-
-    <!-- Microsoft Ad
-    <div id="myAd" style="position: absolute; top: 125px; right: 10px; width: 160px; height: 600px; z-index: 1;"
-         data-win-control="MicrosoftNSJS.Advertising.AdControl"
-         data-win-options="{ applicationId: 'f32a735b-bd13-40ee-9787-49ead10dab01', adUnitId: '10728016' }">
-    </div>
-    -->
-    <!--
-    <div class="nowPlayingTransportControlsContainer">
-        <button>Play</button>
-
-        <div data-win-control="WinJS.UI.Flyout">
-            <input type="range" class="win-vertical" name="volume" min="1" max="100" />
-        </div>
-    </div>
-    -->
-    <!-- Media Controls -->
     <div id="mediaControls" style="display: none;">
         <audio id="player"
                 msaudiocategory="BackgroundCapableMedia"
-                controls="controls"
-                preload="auto"
-                src=""
-                onpause="Smodr.mediaPaused(event)"
-                onplaying="Smodr.mediaPlaying(event)"
-                onended="Smodr.mediaEnded(event)"></audio>
-    </div>
-</body>
-</html>
+         

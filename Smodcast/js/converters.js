@@ -4,7 +4,7 @@
 (function () {
     'use strict';
 
-    WinJS.Namespace.define("Converters", {
+    WinJS.Namespace.define('Converters', {
         /**
          * Convert current time and duration to human
          * readable string.
@@ -22,7 +22,7 @@
          * Convert # of listens to appropriate class
          */
         listensToClass: WinJS.Binding.converter(function (listens) {
-            return listens === 0 ? "finished" : "";
+            return listens === 0 ? 'finished' : '';
         })
     });
 
