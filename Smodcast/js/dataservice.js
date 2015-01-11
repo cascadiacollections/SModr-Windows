@@ -50,4 +50,24 @@
                 if (request.status === 200) {
                     var xml = request.response;
                     feed.title = xml.querySelector('rss > channel > title').textContent;
-               
+                    _getEpisodesFromXml(xml).done(function (episodes) {
+                        comp(episodes)
+                    });
+                }
+            })
+        });
+    };
+
+    /**
+     * Extract episode number from its title
+     */
+    function _getNumberFromString(title) {
+        return title.match(/\d+/)[0];
+    };
+
+    WinJS.Namespace.define("DataService", {
+        feed: feed,
+        getEpisodes: getEpisodes
+    });
+
+})(jQuery, _);

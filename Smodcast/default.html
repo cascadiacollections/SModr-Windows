@@ -8,7 +8,7 @@
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
     <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
 
-    <script src="Scripts/jquery-2.1.3.js"></script>
+    <script src="Scripts/jquery-2.1.3.min.js"></script>
     <script src="Scripts/lodash.min.js"></script>
     <script src="js/lib/jquery.media.js"></script>
     <script src="js/lib/pixastic.custom.js"></script>
@@ -28,7 +28,7 @@
     <div id="appHeader">
         <h1>SModcast</h1>
     </div>
-    <div id="iconTextApplicationsTemplate" data-win-control="WinJS.Binding.Template" >
+    <div id="iconTextApplicationsTemplate" data-win-control="WinJS.Binding.Template">
         <div class="iconTextApplications">
             <h2 class="episodeNumber" data-win-bind="innerText: number"></h2>
             <div class="episodeInfo">
@@ -46,5 +46,13 @@
     </div>
     <div id="mediaControls" style="display: none;">
         <audio id="player"
-                msaudiocategory="BackgroundCapableMedia"
-         
+               msaudiocategory="BackgroundCapableMedia"
+               controls="controls"
+               preload="auto"
+               src=""
+               onpause="Smodr.mediaPaused(event)"
+               onplaying="Smodr.mediaPlaying(event)"
+               onended="Smodr.mediaEnded(event)"></audio>
+    </div>
+</body>
+</html>
