@@ -20,6 +20,7 @@
                     var $episode = $(episode);
                     var fullTitle = $episode.find('title').text();
                     var title = fullTitle.split(": ")[1];
+                    title = title.split('#')[0]; // @TODO: Hack because RSS feed is formatted incorrectly
                     var episodeNumber = (episodes.length - 1) - i;
                     var descriptionNode = $episode.find('description').html();
                     var description = descriptionNode.replace("<!--[CDATA[", "").replace("]]-->", ""); // NOTE: SmodCo RSS feeds are weirdly formatted
