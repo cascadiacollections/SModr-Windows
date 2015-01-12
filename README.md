@@ -1,24 +1,15 @@
-Smodr-Windows
-====
+# Smodr
 
-Kevin Smith's Smodcast client for Windows 8.1 written in HTML5, JavaScript, and CSS3.
+[Windows Store app](http://apps.microsoft.com/windows/en-us/app/smodr/ba5f0a9b-a2e3-470d-97da-d441dbb1e01c) for listening to Kevin Smith & Scott Mosier's SModcast podcast.
 
-About
------
-
-This app is the result of learning Windows 8 Store app development. 
-The goal is to eventually create a Smodcast app that I enjoy to use as a Kevin Smith fan.
-
-Features
-----
+## Features
 
 * Fetches up-to-date list of Smodcast episodes
 * Plays audio in foregrund & background
 * Responds to keyboard media shortcuts for controlling media playback
 * Dynamic background of Smodcast blurred and dimmed cover photo
 
-Screenshots
-----
+## Screenshots
 
 ![Smodr Initial View - Windows 8.1](http://wscont1.apps.microsoft.com/winstore/1x/74fffcdd-0411-4a62-baeb-6586613ce35c/Screenshot.301331.1000000.jpg)
 
@@ -28,33 +19,7 @@ Screenshots
 
 ![Smodr Background Playback - Windows 8.1](http://wscont2.apps.microsoft.com/winstore/1x/74fffcdd-0411-4a62-baeb-6586613ce35c/Screenshot.301331.1000003.jpg)
 
-Requirements
-----
-
-* [Windows 8.1](http://windows.microsoft.com/en-us/windows-8/meet)
-
-Installation
-----
-
-Visit [Smodr @ Windows Store](http://apps.microsoft.com/windows/en-us/app/smodr/ba5f0a9b-a2e3-470d-97da-d441dbb1e01c) or search for *Smodr* in the Windows Store and press install.
-
-Development Details
-----
-
-* For development status please visit [Smodr's Trello board](https://trello.com/b/DgbVEwlE/smodr).
-
-Feature Requests & Bug Reports
-----
-
-* For feature requests and bug reports please use [Github Issues](https://github.com/KevinTCoughlin/Smodr-Windows/issues).
-
-Contributing
-----
-
-See [CONTRIBUTING.md](https://github.com/KevinTCoughlin/Smodr-Windows/edit/master/CONTRIBUTING.md) for how to contribute to the project.
-
-License
-----
+## License
 
 Smodr-Windows: Copyright (c) 2014 Kevin Coughlin
 
