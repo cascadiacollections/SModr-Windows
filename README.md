@@ -7,7 +7,6 @@
 * Fetches up-to-date list of Smodcast episodes
 * Plays audio in foregrund & background
 * Responds to keyboard media shortcuts for controlling media playback
-* Dynamic background of Smodcast blurred and dimmed cover photo
 
 ## Screenshots
 
@@ -21,7 +20,7 @@
 
 ## License
 
-Smodr-Windows: Copyright (c) 2014 Kevin Coughlin
+Smodr-Windows: Copyright (c) 2015 Kevin Coughlin
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
