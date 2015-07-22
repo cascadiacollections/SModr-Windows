@@ -52,7 +52,7 @@
     <PackageCertificateKeyFile>Smodcast_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
-    <PackageCertificateThumbprint>ACBFA368BD56358508D31D4484BB56DEF041036D</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>72165FBE1DD2F48DE185A139D39985056E9A82DF</PackageCertificateThumbprint>
     <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
   <ItemGroup>

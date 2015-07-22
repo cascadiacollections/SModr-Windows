@@ -356,22 +356,22 @@
   <AccountPackageIdentityNames>
     <MainPackageIdentityName>40739KevinCoughlin.Podr</MainPackageIdentityName>
   </AccountPackageIdentityNames>
-  <PackageInfoList LandingUrl="https://appdev.microsoft.com:443/StorePortals/Developer/Catalog/ReleaseAnchor/ba5f0a9b-a2e3-470d-97da-d441dbb1e01c">
+  <PackageInfoList LandingUrl="https://dev.windows.com/dashboard/Application?appId=9WZDNCRDMCTR">
     <BundleInfo>
       <PackageInfo>
         <OsMinVersion>6.3.0.0</OsMinVersion>
         <PackageArchitecture>Neutral</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.2.2.7</PackageMaxArchitectureVersion>
+        <PackageMaxArchitectureVersion>1.3.0.4</PackageMaxArchitectureVersion>
       </PackageInfo>
       <PackageInfo>
         <OsMinVersion>6.3.0.0</OsMinVersion>
         <PackageArchitecture>Neutral</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.2.2.7</PackageMaxArchitectureVersion>
+        <PackageMaxArchitectureVersion>1.3.0.4</PackageMaxArchitectureVersion>
       </PackageInfo>
       <PackageInfo>
         <OsMinVersion>6.3.0.0</OsMinVersion>
         <PackageArchitecture>Neutral</PackageArchitecture>
-        <PackageMaxArchitectureVersion>1.2.2.7</PackageMaxArchitectureVersion>
+        <PackageMaxArchitectureVersion>1.3.0.4</PackageMaxArchitectureVersion>
       </PackageInfo>
     </BundleInfo>
   </PackageInfoList>
