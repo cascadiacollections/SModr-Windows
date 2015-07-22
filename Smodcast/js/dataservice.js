@@ -4,7 +4,7 @@
     var feed = {
         episodes: []
     };
-    var SMODCAST_URL = 'http://smodcast.com/channels/smodcast/feed/';
+    var SMODCAST_URL = 'http://feeds.feedburner.com/SModcasts';
     var options = {
         url: SMODCAST_URL,
         responseType: 'document'
@@ -20,10 +20,8 @@
                     var $episode = $(episode);
                     var fullTitle = $episode.find('title').text();
                     var title = fullTitle.split(": ")[1];
-                    title = title.split('#')[0]; // @TODO: Hack because RSS feed is formatted incorrectly
-                    var episodeNumber = (episodes.length - 1) - i;
-                    var descriptionNode = $episode.find('description').html();
-                    var description = descriptionNode.replace("<!--[CDATA[", "").replace("]]-->", ""); // NOTE: SmodCo RSS feeds are weirdly formatted
+                    var episodeNumber = fullTitle.split(": ")[0];
+                    var description = $episode.find('description').text();
                     var mediaUrl = $episode.find('enclosure') ? $episode.find('enclosure').attr('url') : null;
                     _episodes.push({
                         group: feed,
