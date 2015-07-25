@@ -85,7 +85,6 @@
     <Content Include="images\Wide310x150Logo.scale-80.png" />
     <Content Include="js\converters.js" />
     <Content Include="js\dataservice.js" />
-    <Content Include="js\db.js" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
     <Content Include="js\lib\humanize-duration.js" />
