@@ -14,7 +14,6 @@
     var systemMediaTransportControlsDisplayUpdater = Windows.Media.SystemMediaTransportControls.displayUpdater;
     var notifications = Windows.UI.Notifications;
     var lastViewState;
-    var updateEpisodeIntervalId;
     var $player;
     var $mediaControls;
     var seekToTime = -1;
@@ -56,22 +55,6 @@
                                 setNewMediaItem(item.index);
                             });
                         };
-
-                        database.all().then(function (docs) {
-                            if (docs.rows.length > 0) {
-                                docs.rows.forEach(function (doc) {
-                                    var tmpEpisode = episodesList.getItemFromKey(doc.key);
-                                    tmpEpisode.data._id = doc.doc._id;
-                                    tmpEpisode.data._rev = doc.doc._rev;
-                                    tmpEpisode.data.currentTime = doc.doc.currentTime;
-                                    tmpEpisode.data.duration = doc.doc.duration;
-                                    episodesList.setAt(tmpEpisode.data.number, tmpEpisode); // TODO: fix index retrieval
-                                });
-                                WinJS.UI.process(episodesListView);
-                            }
-                        }).catch(function (err) {
-
-                        });
                     });
 
                     setupSystemMediaTransportControls();
@@ -132,16 +115,12 @@
         $player.autoplay(false);
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.paused;
         pauseMedia();
-        stopUpdatingEpisode();
     }
 
     function mediaPlaying(e) {
         $player.autoplay(true);
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.playing;
         playMedia();
-        if (!updateEpisodeIntervalId) {
-            updateEpisodeIntervalId = setUpdateInterval();
-        }
     }
 
     function mediaEnded(e) {
@@ -149,41 +128,10 @@
         stopMedia();
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.stopped;
         episodesListView.selection.set(null);
-        stopUpdatingEpisode();
     }
 
     function mediaError(e) {
         systemMediaControls.playbackStatus = Windows.Media.MediaPlaybackStatus.closed;
-    }
-
-    function setUpdateInterval() {
-        var updateInterval = 5000;
-
-        function updateEpisode() {
-            nowPlayingEpisode.data.currentTime = $player.time();
-
-            // TODO: move out of here?
-            if (!nowPlayingEpisode.data.duration) {
-                nowPlayingEpisode.data.duration = $player.duration();
-            }
-
-            // If first time inserting, set _id
-            if (!nowPlayingEpisode.data._id) nowPlayingEpisode.data._id = nowPlayingEpisode.key;
-
-            database.insert(nowPlayingEpisode.data).then(function (resp) {
-                nowPlayingEpisode.data._id = resp.id;
-                nowPlayingEpisode.data._rev = resp.rev;
-            }).catch(function (err) {
-
-            });
-        }
-
-        return setInterval(updateEpisode, updateInterval);
-    }
-
-    function stopUpdatingEpisode() {
-        clearInterval(updateEpisodeIntervalId);
-        updateEpisodeIntervalId = null;
     }
 
     function setupSystemMediaTransportControls() {
