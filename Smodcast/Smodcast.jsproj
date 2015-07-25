@@ -101,6 +101,7 @@
     <Content Include="Scripts\jquery-2.1.4.min.map" />
     <Content Include="Scripts\lodash.js" />
     <Content Include="Scripts\lodash.min.js" />
+    <Content Include="Scripts\_references.js" />
     <None Include="Smodcast_StoreKey.pfx" />
     <None Include="Package.StoreAssociation.xml" />
     <None Include="Smodcast_TemporaryKey.pfx" />
