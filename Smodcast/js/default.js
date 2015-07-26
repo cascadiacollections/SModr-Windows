@@ -1,7 +1,4 @@
-﻿/**
- * Kevin Coughlin <kevintcoughlin@gmail.com>
- */
-(function ($, _) {
+﻿(function ($, _) {
     'use strict';
 
     var app = WinJS.Application;

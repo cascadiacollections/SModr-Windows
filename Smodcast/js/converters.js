@@ -1,7 +1,4 @@
-﻿/**
- * Kevin Coughlin <kevintcoughlin@gmail.com>
- */
-(function () {
+﻿(function () {
     'use strict';
 
     WinJS.Namespace.define('Converters', {
