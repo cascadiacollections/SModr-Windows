@@ -1,3 +1,1 @@
 MainPackage=C:\Users\Kevin\Documents\github\Smodcast-Win8\Smodcast\bin\Release\Smodcast_1.3.2.0_AnyCPU.appx
-ResourcePack=C:\Users\Kevin\Documents\github\Smodcast-Win8\Smodcast\bin\Release\Smodcast_1.3.2.0_scale-140.appx
-ResourcePack=C:\Users\Kevin\Documents\github\Smodcast-Win8\Smodcast\bin\Release\Smodcast_1.3.2.0_scale-180.appx

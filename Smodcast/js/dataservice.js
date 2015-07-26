@@ -12,34 +12,27 @@
 
     var _getEpisodesFromXml = function(xml) {
         return new WinJS.Promise(function (comp, err, prog) {
-            var episodes = $(xml).find('item');
             var _episodes = [];
-
-            try {
-                _.each(episodes, function (episode, i) {
-                    var $episode = $(episode);
-                    var fullTitle = $episode.find('title').text();
-                    var title = fullTitle.split(": ")[1];
-                    var episodeNumber = fullTitle.split(": ")[0];
-                    var description = $episode.find('description').text();
-                    var mediaUrl = $episode.find('enclosure') ? $episode.find('enclosure').attr('url') : null;
-                    _episodes.push({
-                        group: feed,
-                        key: feed.title,
-                        title: title,
-                        number: episodeNumber,
-                        description: description,
-                        mediaUrl: mediaUrl,
-                        currentTime: 0.0,
-                        duration: 0.0,
-                        listens: 0
-                    });
-                }, this);
-                comp(_episodes);
-            }
-            catch (e) {
-
-            }
+            $(xml).find('item').each(function () {
+                var $episode = $(this);
+                var fullTitle = $episode.find('title').text();
+                var title = fullTitle.split(": ")[1];
+                var episodeNumber = fullTitle.split(": ")[0];
+                var description = $episode.find('description').text();
+                var mediaUrl = $episode.find('enclosure') ? $episode.find('enclosure').attr('url') : null;
+                _episodes.push({
+                    group: feed,
+                    key: feed.title,
+                    title: title,
+                    number: episodeNumber,
+                    description: description,
+                    mediaUrl: mediaUrl,
+                    currentTime: 0.0,
+                    duration: 0.0,
+                    listens: 0
+                });
+            });
+            comp(_episodes);
         });
     }
 
