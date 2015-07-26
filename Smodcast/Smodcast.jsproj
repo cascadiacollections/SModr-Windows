@@ -50,7 +50,7 @@
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>Smodcast_StoreKey.pfx</PackageCertificateKeyFile>
-    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
     <PackageCertificateThumbprint>72165FBE1DD2F48DE185A139D39985056E9A82DF</PackageCertificateThumbprint>
     <AppxBundle>Always</AppxBundle>
