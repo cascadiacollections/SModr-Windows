@@ -1,15 +1,7 @@
 ﻿(function ($, _) {
     'use strict';
 
-    var feed = {
-        episodes: []
-    };
-    var SMODCAST_URL = 'http://feeds.feedburner.com/SModcasts';
-    var options = {
-        url: SMODCAST_URL,
-        responseType: 'document'
-    };
-
+    // Parse XML for episode items.
     var _getEpisodesFromXml = function(xml) {
         return new WinJS.Promise(function (comp, err, prog) {
             var _episodes = [];
@@ -21,8 +13,6 @@
                 var description = $episode.find('description').text();
                 var mediaUrl = $episode.find('enclosure') ? $episode.find('enclosure').attr('url') : null;
                 _episodes.push({
-                    group: feed,
-                    key: feed.title,
                     title: title,
                     number: episodeNumber,
                     description: description,
@@ -36,13 +26,15 @@
         });
     }
 
+    // XHR request for Feed XML.
     function getEpisodes() {
         return new WinJS.Promise(function (comp, err, prog) {
-            WinJS.xhr(options).done(function (request) {
+            WinJS.xhr({
+                url: 'http://feeds.feedburner.com/SModcasts',
+                responseType: 'document'
+            }).done(function (request) {
                 if (request.status === 200) {
-                    var xml = request.response;
-                    feed.title = xml.querySelector('rss > channel > title').textContent;
-                    _getEpisodesFromXml(xml).done(comp);
+                    _getEpisodesFromXml(request.response).done(comp);
                 }
             })
         });
@@ -56,7 +48,10 @@
     };
 
     WinJS.Namespace.define("DataService", {
-        feed: feed,
+        feed: {
+            title: '',
+            episodes: []
+        },
         getEpisodes: getEpisodes
     });
 
