@@ -31,7 +31,6 @@
         return new WinJS.Promise(function (comp, err, prog) {
             WinJS.xhr({
                 url: 'http://feeds.feedburner.com/SModcasts',
-                responseType: 'document'
             }).done(function (request) {
                 if (request.status === 200) {
                     _getEpisodesFromXml(request.response).done(comp);
