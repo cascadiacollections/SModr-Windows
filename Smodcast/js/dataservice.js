@@ -41,13 +41,6 @@
         });
     };
 
-    /**
-     * Extract episode number from its title
-     */
-    function _getNumberFromString(title) {
-        return title.match(/\d+/)[0];
-    };
-
     WinJS.Namespace.define("DataService", {
         feed: {
             title: '',
