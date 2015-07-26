@@ -5,6 +5,11 @@
     var _getEpisodesFromXml = function(xml) {
         return new WinJS.Promise(function (comp, err, prog) {
             var _episodes = [];
+            var defaults = {
+                currentTime: 0.0,
+                duration: 0.0,
+                listens: 0
+            };
             $(xml).find('item').each(function () {
                 var $episode = $(this);
                 var fullTitle = $episode.find('title').text();
@@ -12,15 +17,12 @@
                 var episodeNumber = fullTitle.split(": ")[0];
                 var description = $episode.find('description').text();
                 var mediaUrl = $episode.find('enclosure') ? $episode.find('enclosure').attr('url') : null;
-                _episodes.push({
+                _episodes.push(_.defaults({
                     title: title,
                     number: episodeNumber,
                     description: description,
-                    mediaUrl: mediaUrl,
-                    currentTime: 0.0,
-                    duration: 0.0,
-                    listens: 0
-                });
+                    mediaUrl: mediaUrl
+                }, defaults));
             });
             comp(_episodes);
         });
