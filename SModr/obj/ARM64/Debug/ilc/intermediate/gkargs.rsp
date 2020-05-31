@@ -1,0 +1,6 @@
+﻿"E:\SModr-windows\SModr\SModr\obj\ARM64\Debug\ilc\in\SModr.exe"
+/Lib:"E:\SModr-windows\SModr\SModr\obj\ARM64\Debug\ilc\in"
+/Lib:"C:\Program Files (x86)\Microsoft SDKs\UWPNuGetPackages\runtime.win10-arm64.microsoft.net.native.compiler\2.2.8-rel-28605-00\tools\ARM64\ilc\lib\Private"
+/WinMD:"E:\SModr-windows\SModr\SModr\obj\ARM64\Debug\ilc\in\WinMetadata\Windows.winmd"
+/VSTelemetrySessionSettings:"{"IsOptedIn":true,"HostName":"Dev14","AppInsightsInstrumentationKey":"f144292e-e3b2-4011-ac90-20e5c03fbce5","AsimovInstrumentationKey":"AIF-312cbd79-9dbb-4c48-a7da-3cc2a931cb70","AppId":1001,"UserId":"7887b528-58d6-40a7-afb4-2b71f081b33f","Id":"ac433599-6caa-4050-bb61-19ff758c7aee","ProcessStartTime":637264973883954978}"
+/RdXmlPath:"C:\Program Files (x86)\Microsoft SDKs\UWPNuGetPackages\microsoft.net.native.compiler\2.2.8-rel-28605-00\tools\LibraryXML"

@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Xml;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Windows.Web.Syndication;
 
 namespace SModr
 {
@@ -15,16 +15,14 @@ namespace SModr
     /// </summary>
     sealed partial class App : Application
     {
-        private static readonly string FEED_URL = "https://feeds.feedburner.com/SModcasts";
-
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
-            this.Suspending += OnSuspending;
+            InitializeComponent();
+            Suspending += OnSuspending;
         }
 
         /// <summary>
@@ -66,19 +64,9 @@ namespace SModr
                 // Ensure the current window is active
                 Window.Current.Activate();
 
-                Task task = GetFeedAsync(FEED_URL);
+                // Extend acrylic
+                //ExtendAcrylicIntoTitleBar();
             }
-        }
-
-        private async Task<SyndicationFeed> GetFeedAsync(string feedUri)
-        {
-            var uri = new Uri(feedUri);
-            var client = new SyndicationClient()
-            {
-                BypassCacheOnRetrieve = true
-            };
-
-            return await client.RetrieveFeedAsync(uri);
         }
 
         /// <summary>
@@ -103,6 +91,16 @@ namespace SModr
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+#pragma warning disable IDE0051 // Remove unused private members
+        private void ExtendAcrylicIntoTitleBar()
+#pragma warning restore IDE0051 // Remove unused private members
+        {
+            CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            titleBar.ButtonBackgroundColor = Colors.Transparent;
+            titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
         }
     }
 }

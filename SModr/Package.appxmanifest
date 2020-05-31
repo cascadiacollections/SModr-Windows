@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="32fb1bf4-7000-4da3-92b0-e3549bdcb075"
-    Publisher="CN=excel"
+    Name="40739KevinCoughlin.Smodr"
+    Publisher="CN=AC6B41A6-C0F1-49DD-8E12-5A2001C77230"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="32fb1bf4-7000-4da3-92b0-e3549bdcb075" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="799e06b8-6f75-423e-99f8-2a8f647e2da5" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>SModr</DisplayName>
-    <PublisherDisplayName>excel</PublisherDisplayName>
+    <PublisherDisplayName>Cascadia Collections</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -39,6 +39,11 @@
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/>
+          <uap:Rotation Preference="portrait"/>
+          <uap:Rotation Preference="landscapeFlipped"/>
+          <uap:Rotation Preference="portraitFlipped"/></uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>
   </Applications>

@@ -1,0 +1,2 @@
+MainPackage=E:\SModr-windows\SModr\SModr\bin\x64\Release\SModr_1.0.0.0_x64.appx
+SymbolPackage=E:\SModr-windows\SModr\SModr\obj\x64\Release\Symbols\SModr_1.0.0.0_x64.appxsym

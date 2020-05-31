@@ -1,0 +1,1 @@
+E:\SModr-windows\SModr\SModr\SModr.csproj;arm64

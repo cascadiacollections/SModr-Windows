@@ -1,0 +1,2 @@
+obj\ARM64\Release\split.pri
+obj\ARM64\Release\split.map.txt
