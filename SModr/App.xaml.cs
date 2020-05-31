@@ -64,8 +64,9 @@ namespace SModr
                 // Ensure the current window is active
                 Window.Current.Activate();
 
-                // Extend acrylic
-                //ExtendAcrylicIntoTitleBar();
+                // @todo: clean-up / default
+                var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+                coreTitleBar.ExtendViewIntoTitleBar = false;
             }
         }
 
@@ -91,16 +92,6 @@ namespace SModr
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
-        }
-
-#pragma warning disable IDE0051 // Remove unused private members
-        private void ExtendAcrylicIntoTitleBar()
-#pragma warning restore IDE0051 // Remove unused private members
-        {
-            CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.ButtonBackgroundColor = Colors.Transparent;
-            titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
         }
     }
 }

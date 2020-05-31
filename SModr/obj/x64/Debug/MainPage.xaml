@@ -14,7 +14,7 @@
             AreTransportControlsEnabled="True"
             PosterSource="https://i1.sndcdn.com/avatars-000375494753-odz2eo-original.jpg"
             Height="97"
-            Width="Auto"/>
+            Stretch="UniformToFill"/>
 
         <ListView x:ConnectionId='3'
             x:Name="BasicGridView"

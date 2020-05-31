@@ -30,13 +30,13 @@
     <AppXManifest Include="E:\SModr-windows\SModr\SModr\bin\x64\Debug\ilc\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2020-05-31T18:36:18.730</Modified>
+      <Modified>2020-05-31T19:17:04.096</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="E:\SModr-windows\SModr\SModr\bin\x64\Debug\ilc\App.xbf">
       <PackagePath>App.xbf</PackagePath>
-      <Modified>2020-05-31T18:36:05.027</Modified>
+      <Modified>2020-05-31T19:16:53.378</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="E:\SModr-windows\SModr\SModr\bin\x64\Debug\ilc\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
@@ -78,23 +78,23 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="E:\SModr-windows\SModr\SModr\bin\x64\Debug\ilc\MainPage.xbf">
       <PackagePath>MainPage.xbf</PackagePath>
-      <Modified>2020-05-31T18:36:05.027</Modified>
+      <Modified>2020-05-31T19:16:53.378</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="E:\SModr-windows\SModr\SModr\bin\x64\Debug\ilc\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2020-05-31T18:36:05.736</Modified>
+      <Modified>2020-05-31T19:10:02.077</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="E:\SModr-windows\SModr\SModr\bin\x64\Debug\ilc\SModr.dll">
       <PackagePath>SModr.dll</PackagePath>
-      <Modified>2020-05-31T18:36:18.601</Modified>
+      <Modified>2020-05-31T19:17:03.963</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="E:\SModr-windows\SModr\SModr\bin\x64\Debug\ilc\SModr.exe">
       <PackagePath>SModr.exe</PackagePath>
-      <Modified>2020-05-31T18:36:18.714</Modified>
+      <Modified>2020-05-31T19:17:04.077</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="E:\SModr-windows\SModr\SModr\bin\x64\Debug\ilc\SModr.pdb">
       <PackagePath>SModr.pdb</PackagePath>
-      <Modified>2020-05-31T18:36:18.710</Modified>
+      <Modified>2020-05-31T19:17:04.073</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

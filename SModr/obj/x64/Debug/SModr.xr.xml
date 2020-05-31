@@ -20,7 +20,7 @@
       <RootProperty Name="AreTransportControlsEnabled" />
       <RootProperty Name="PosterSource" />
       <RootProperty Name="Height" />
-      <RootProperty Name="Width" />
+      <RootProperty Name="Stretch" />
     </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.ListView">
       <RootProperty Name="IsItemClickEnabled" />
